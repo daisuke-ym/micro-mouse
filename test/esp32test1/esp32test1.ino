@@ -56,16 +56,22 @@ void motor_test() {
 }
 
 void motor_vr_test() {
-	int sensor = analogRead(VR1);
-	int duty = map(sensor, 0, 4095, 0, 255);
-
+	int sensor = analogRead(VR1) - 2047;
+	int duty = map(abs(sensor), 0, 2047, 0, 255);
+	
 	/*
 	SerialBT.print(sensor);
 	SerialBT.print("\t");
 	SerialBT.println(duty);
 	*/
-	analogWrite(AIN1, duty);
-	analogWrite(AIN2, 0);
+	if (sensor > 0) {
+		analogWrite(AIN1, duty);
+		analogWrite(AIN2, 0);
+	}
+	else {
+		analogWrite(AIN1, 0);
+		analogWrite(AIN2, duty);
+	}
 
 	delay(100);
 }
