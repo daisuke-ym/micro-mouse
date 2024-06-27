@@ -1,4 +1,5 @@
 #include <BluetoothSerial.h>
+#include <Ticker.h>
 
 BluetoothSerial SerialBT;
 
@@ -6,15 +7,20 @@ const int LED = 23;
 const int AIN1 = 16;
 const int AIN2 = 17;
 const int VR1 = 26;
-const int ENC_1A = 27;
-const int ENC_1B = 14;
+const int ENC_1A = 36;
+const int ENC_1B = 39;
 volatile int ENC = 0; // ロータリーエンコーダの値
+const int IRLED1 = 18;
+const int SENSOR1 = 4;
 
 const int DELAY = 2000;
+
+Ticker tk;
 
 void setup() {
 	SerialBT.begin("ESP32test");
 	pinMode(LED, OUTPUT);
+	pinMode(IRLED1, OUTPUT);
 
 	// analogWriteFrequency() を設定するには，その前に analogWrite() が必要
 	analogWrite(AIN1, 0);
@@ -28,6 +34,9 @@ void setup() {
 	pinMode(ENC_1A, INPUT);
 	pinMode(ENC_1B, INPUT);
 	attachInterrupt(ENC_1A, isr_rotary_encoder, FALLING);
+
+	// Ticker による割り込みでセンサの値を読む
+	tk.attach_ms(1, sensor_test);
 }
 
 void loop() {
@@ -93,4 +102,27 @@ void isr_rotary_encoder() {
 	else {
 		ENC--;
 	}
+}
+
+void sensor_test() {
+	int ir_off, ir_on;
+
+	digitalWrite(IRLED1, LOW);
+	delayMicroseconds(50);
+	ir_off = analogRead(SENSOR1);
+
+	digitalWrite(IRLED1, HIGH);
+	delayMicroseconds(50);
+	ir_on = analogRead(SENSOR1);
+	
+	digitalWrite(IRLED1, LOW);
+
+	/*
+	SerialBT.print(ir_off);
+	SerialBT.print("\t");
+	SerialBT.print(ir_on);
+	SerialBT.print("\t");
+	SerialBT.print(ir_on - ir_off);
+	SerialBT.println();
+	*/
 }
