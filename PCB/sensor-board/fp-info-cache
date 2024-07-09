@@ -1,4 +1,4 @@
-22549480162046855
+22553129107326779
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
@@ -64344,6 +64344,13 @@ AE-BME280_Angled-FemaleThinSocket_SMD
 6
 6
 MyLib
+AE-BNO055-BO
+9 axis IMU
+9 axis IMU
+0
+8
+8
+MyLib
 AE-HDC1000_H
 
 
@@ -64392,6 +64399,13 @@ APT-2S
 0
 6
 4
+MyLib
+AQM0802
+
+
+0
+9
+9
 MyLib
 AT-407_h
 
