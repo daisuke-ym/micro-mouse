@@ -11,3 +11,7 @@
 *.gto
 # KiCad のバックアップフォルダは無視する
 *-backups
+# Inventorのバックアップフォルダは無視する
+OldVersions
+# stl ファイルは無視する
+*.stl
