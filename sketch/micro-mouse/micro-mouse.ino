@@ -65,6 +65,8 @@ void setup() {
 
   // センサの値を読むタスクを追加
   xTaskCreateUniversal(read_sensor, "task_read_sensor", 8192, NULL, 1, NULL, APP_CPU_NUM);
+  // センサの値を出力するタスクを追加
+  xTaskCreateUniversal(print_sensor, "task_print_sensor", 8192, NULL, 1, NULL, APP_CPU_NUM);
 }
 
 // ----------------------------------------------------------------------
@@ -104,5 +106,20 @@ void read_sensor(void *pvParameters) {
     digitalWrite(IRLED_R_FL, LOW);
     // Task を回すうえで必ず必要な delay
     delay(1);
+  }
+}
+
+// ----------------------------------------------------------------------
+void print_sensor(void *pvParameters) {
+  while (1) {
+    Serial.print(SS_L);
+    Serial.print("\t");
+    Serial.print(SS_FL);
+    Serial.print("\t");
+    Serial.print(SS_FR);
+    Serial.print("\t");
+    Serial.print(SS_R);
+    Serial.println();
+    delay(250);
   }
 }
