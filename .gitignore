@@ -1,0 +1,17 @@
+# gerber ファイルは無視する
+*.drl
+*.gbl
+*.gbs
+*.gbp
+*.gbo
+*.gm1
+*.gtl
+*.gts
+*.gtp
+*.gto
+# KiCad のバックアップフォルダは無視する
+*-backups
+# Inventorのバックアップフォルダは無視する
+OldVersions
+# stl ファイルは無視する
+*.stl
