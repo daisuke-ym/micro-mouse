@@ -77,7 +77,7 @@ void setup() {
 // ----------------------------------------------------------------------
 void loop() {
   test_run_to_mm();
-  test_spinturn();
+  test_pivotturn();
 }
 
 // ----------------------------------------------------------------------
@@ -94,6 +94,15 @@ void test_spinturn() {
   if (digitalRead(SW1) == LOW) {
     delay(1000);
     spinturn(90.0); // 90度右回り
+    flash_led(1, 5);
+  }
+}
+
+// ----------------------------------------------------------------------
+void test_pivotturn() {
+  if (digitalRead(SW1) == LOW) {
+    delay(1000);
+    pivoturn(-90.0); // 90度左回り
     flash_led(1, 5);
   }
 }
@@ -123,6 +132,29 @@ void spinturn(double angle) {
   while (stepperL.stepsToGo() != 0 && stepperR.stepsToGo() != 0) {
     stepperL.run();
     stepperR.run();
+  }
+  stepperL.stop();
+  stepperR.stop();
+}
+
+// ----------------------------------------------------------------------
+// 指定した角度だけ回転する（車輪の中心で旋回）
+// angle: 角度(度単位)
+// 右回りは正、左回りは負
+void pivoturn(double angle) {
+  double a = angle / 360.0 * TREAD * 2.0 * M_PI / MMPS;
+  if (angle > 0) {
+    stepperL.move(a);
+    while (stepperL.stepsToGo() != 0) {
+      stepperL.run();
+    }
+    stepperL.stop();
+  } else {
+    stepperR.move(-1 * a);
+    while (stepperR.stepsToGo() != 0) {
+      stepperR.run();
+    }
+    stepperR.stop();
   }
   stepperL.stop();
   stepperR.stop();
