@@ -11,6 +11,8 @@
 *.gto
 # KiCad のバックアップフォルダは無視する
 *-backups
+# KiCad JLCPCB plugin のフォルダは無視する
+production
 # Inventorのバックアップフォルダは無視する
 OldVersions
 # stl ファイルは無視する
