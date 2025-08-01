@@ -1,6 +1,8 @@
 #include <Unistep2_mod.h>
 #include <ST7032_asukiaaa.h>
 #include <math.h>
+#include <Wire.h>
+#include <Adafruit_BNO055.h>
 
 // センサと赤外線LED
 const int SENSOR_FL = 35;
@@ -45,6 +47,12 @@ Unistep2_mod stepperR(STP2P1, STP2P2, STP2P3, STP2P4, 4096, DEFAULT_STEP_DELAY);
 // AQM1602Y LCD
 ST7032_asukiaaa lcd;
 
+// BNO055 センサ
+Adafruit_BNO055 bno = Adafruit_BNO055(55, 0x28);
+volatile double DIR_X; // オイラー角 X軸
+volatile double DIR_Y; // オイラー角 Y軸
+volatile double DIR_Z; // オイラー角 Z軸
+
 TaskHandle_t thp[1];
 
 // ----------------------------------------------------------------------
@@ -65,6 +73,14 @@ void setup() {
   pinMode(SW2, INPUT_PULLUP);
   pinMode(LED1, OUTPUT);
   pinMode(LED2, OUTPUT);
+  // BNO055 の初期化
+  if (!bno.begin()) {
+    Serial.print("BNO055 not detected. Check wiring.");
+    while (1);
+  }
+  bno.setExtCrystalUse(false);
+  // BNO055 の初期化完了まで待つ
+  delay(1000);
 
   // センサの値を読むタスク
   xTaskCreateUniversal(read_sensor, "task_read_sensor", 8192, NULL, 1, NULL, APP_CPU_NUM);
@@ -72,12 +88,14 @@ void setup() {
   //xTaskCreateUniversal(print_sensor, "task_print_sensor", 8192, NULL, 1, NULL, APP_CPU_NUM);
   // ステッパの値を出力するタスク
   xTaskCreatePinnedToCore(print_steps, "task_print_steps", 8192, NULL, 1, NULL, APP_CPU_NUM);
+  // BNO055 の値を読むタスク
+  xTaskCreatePinnedToCore(read_bno, "task_read_bno", 8192, NULL, 1, NULL, APP_CPU_NUM);
 }
 
 // ----------------------------------------------------------------------
 void loop() {
   test_run_to_mm();
-  test_pivotturn();
+  test_spinturn();
 }
 
 // ----------------------------------------------------------------------
@@ -267,5 +285,25 @@ void print_steps(void *args) {
       lcd_period = millis();
 //    }
     delay(100);
+  }
+}
+
+// ----------------------------------------------------------------------
+void read_bno(void *pvParameters) {
+
+  while (1) {
+    imu::Vector<3> IMU_EULER = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+    DIR_X = IMU_EULER.x();
+    DIR_Y = IMU_EULER.y();
+    DIR_Z = IMU_EULER.z();
+    // デバッグ用にシリアル出力
+    Serial.print("X: ");
+    Serial.print(DIR_X);
+    Serial.print(" Y: ");
+    Serial.print(DIR_Y);
+    Serial.print(" Z: ");
+    Serial.println(DIR_Z);
+    // Task を回すうえで必ず必要な delay
+    delay(10);
   }
 }
