@@ -94,8 +94,7 @@ void setup() {
 
 // ----------------------------------------------------------------------
 void loop() {
-  test_run_to_mm();
-  test_spinturn();
+  test_spinturn_imu();
 }
 
 // ----------------------------------------------------------------------
@@ -122,6 +121,20 @@ void test_pivotturn() {
     delay(1000);
     pivoturn(-90.0); // 90度左回り
     flash_led(1, 5);
+  }
+}
+
+// ----------------------------------------------------------------------
+void test_spinturn_imu() {
+  if (digitalRead(SW1) == LOW) {
+    delay(1000);
+    spinturn_imu(-90.0); // 90度左回り
+    flash_led(1, 5);
+  }
+  if (digitalRead(SW2) == LOW) {
+    delay(1000);
+    spinturn_imu(90.0); // 90度右回り
+    flash_led(2, 5);
   }
 }
 
@@ -177,6 +190,46 @@ void pivoturn(double angle) {
   stepperL.stop();
   stepperR.stop();
 }
+
+// ----------------------------------------------------------------------
+// IMUのオイラー角を見て指定した角度だけ回転する（トレッドの中心で旋回）
+// angle: 角度(度単位)
+// 右回りは正、左回りは負
+void spinturn_imu(double angle) {
+  angle = fmod(angle, 360.0);
+  double init_dir_x = DIR_X + 360.0; // 初期方向
+  double target_dir_x = init_dir_x + angle; // 目標方向
+  /*
+  // デバッグ用にシリアル出力
+  Serial.print("init_dir_x: ");
+  Serial.println(init_dir_x);
+  Serial.print("target_dir_x: ");
+  Serial.println(target_dir_x);
+  Serial.print("angle: ");
+  Serial.println(angle);
+  */
+  if (angle >= 0.0) {
+    stepperL.move(4000);
+    stepperR.move(-4000);
+    while ((DIR_X + 360.0) < target_dir_x) {
+      stepperL.run();
+      stepperR.run();
+    }
+  }
+  else {
+    stepperL.move(-4000);
+    stepperR.move(4000);
+    while ((DIR_X + 360.0) > target_dir_x) {
+      stepperL.run();
+      stepperR.run();
+    }
+  }
+  stepperL.move(0);
+  stepperR.move(0);
+  stepperL.stop();
+  stepperR.stop();
+}
+
 
 // ----------------------------------------------------------------------
 void flash_led(int led, int count) {
@@ -296,6 +349,7 @@ void read_bno(void *pvParameters) {
     DIR_X = IMU_EULER.x();
     DIR_Y = IMU_EULER.y();
     DIR_Z = IMU_EULER.z();
+    /*
     // デバッグ用にシリアル出力
     Serial.print("X: ");
     Serial.print(DIR_X);
@@ -303,6 +357,7 @@ void read_bno(void *pvParameters) {
     Serial.print(DIR_Y);
     Serial.print(" Z: ");
     Serial.println(DIR_Z);
+    */
     // Task を回すうえで必ず必要な delay
     delay(10);
   }
