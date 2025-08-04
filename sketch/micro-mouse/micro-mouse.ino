@@ -53,8 +53,6 @@ volatile double DIR_X; // オイラー角 X軸
 volatile double DIR_Y; // オイラー角 Y軸
 volatile double DIR_Z; // オイラー角 Z軸
 
-TaskHandle_t thp[1];
-
 // ----------------------------------------------------------------------
 void setup() {
   // serial
