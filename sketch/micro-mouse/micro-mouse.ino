@@ -192,15 +192,13 @@ void print_steps(void *args) {
   static unsigned long lcd_period = 0;
 
   while (1) {
-//    if (millis() - lcd_period >= 100) {
-      lcd.setCursor(0, 0);
-      lcd.print(stepperL.stepsToGo());
-      lcd.print("   ");
-      lcd.setCursor(8, 0);
-      lcd.print(stepperR.stepsToGo());
-      lcd.print("   ");
-      lcd_period = millis();
-//    }
+    lcd.setCursor(0, 0);
+    lcd.print(stepperL.stepsToGo());
+    lcd.print("   ");
+    lcd.setCursor(8, 0);
+    lcd.print(stepperR.stepsToGo());
+    lcd.print("   ");
+    lcd_period = millis();
     delay(100);
   }
 }
