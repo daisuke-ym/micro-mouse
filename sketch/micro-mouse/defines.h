@@ -31,7 +31,6 @@ const double WHEEL_D = 50.0; // ホイールの直径(mm)
 const double TREAD = 103.0;  // トレッド
 const double STEPS = 4096.0; // 1回転するのに必要なステップ数
 const double MMPS = M_PI * WHEEL_D / STEPS; // 1ステップで進む距離(milli meter per step)
-const double TURN90 = M_PI * TREAD * 0.25 / MMPS; // 90度ターンに必要なステップ数
 
 // ステッピングモータ
 const unsigned long DEFAULT_STEP_DELAY = 1000;
