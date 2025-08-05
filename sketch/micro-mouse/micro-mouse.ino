@@ -22,13 +22,13 @@ const int SW2 = 13;
 const int LED1 = 23;
 const int LED2 = 12;
 // ステッピングモータ左
-const int STP1P1 = 5;
-const int STP1P2 = 18;
-const int STP1P3 = 17;
-const int STP1P4 = 16;
+const int STP1P1 = 16;
+const int STP1P2 = 17;
+const int STP1P3 = 5;
+const int STP1P4 = 18;
 // ステッピングモータ右
-const int STP2P1 = 33;
-const int STP2P2 = 32;
+const int STP2P1 = 32;
+const int STP2P2 = 33;
 const int STP2P3 = 25;
 const int STP2P4 = 26;
 
@@ -92,7 +92,9 @@ void setup() {
 
 // ----------------------------------------------------------------------
 void loop() {
-  test_spinturn_imu();
+  test_run_to_mm();
+  test_spinturn();
+  //test_spinturn_imu();
 }
 
 // ----------------------------------------------------------------------
