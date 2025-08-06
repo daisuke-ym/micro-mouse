@@ -45,3 +45,40 @@ Adafruit_BNO055 bno = Adafruit_BNO055(55, 0x28);
 volatile double DIR_X; // オイラー角 X軸
 volatile double DIR_Y; // オイラー角 Y軸
 volatile double DIR_Z; // オイラー角 Z軸
+
+// マウスの方向を示すenum
+enum Direction {
+  DIR_NORTH = 0, // 北
+  DIR_WEST  = 1, // 西
+  DIR_SOUTH = 2, // 南
+  DIR_EAST  = 3, // 東
+};
+
+// 壁があるかどうかの閾値
+const int WALL_TV = 1000; // 壁があるとみなすセンサ値の閾値
+
+// 迷路の大きさ
+#define MAZE_SIZE 4
+// 迷路の構造を表す構造体
+struct _MAZE {
+  uint8_t x; // マウスの現在位置 X
+  uint8_t y; // マウスの現在位置 Y
+  uint8_t goal_x; // ゴール位置 X
+  uint8_t goal_y; // ゴール位置 Y
+  uint8_t walls[MAZE_SIZE][MAZE_SIZE]; // 迷路の壁を表す2次元配列
+  // 壁の状態を表すビットフラグ
+  // 壁ありは1、壁なしは0
+  // 0b東南西北東南西北
+  // ビットローテーションしたときに楽なように同じパターンを使う
+  uint8_t passed[MAZE_SIZE][MAZE_SIZE]; // 通過済みのセルを表す2次元配列
+  Direction direction; // マウスの現在の方向
+};
+
+struct _MAZE MAZE = {
+  .x = 0,
+  .y = 0,
+  .goal_x = 3,
+  .goal_y = 3,
+  .direction = DIR_NORTH
+};
+

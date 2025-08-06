@@ -1,0 +1,274 @@
+// ----------------------------------------------------------------------
+void init_maze() {
+  // MAZEの初期化
+  for (uint8_t i = 0; i < MAZE_SIZE; i++) {
+    for (uint8_t j = 0; j < MAZE_SIZE; j++) {
+        MAZE.walls[i][j] = 0; // 初期状態は壁はない
+        MAZE.passed[i][j] = 0; // セルは未通過
+    }
+  }
+  // 壁の状態を設定
+  // 初期位置は北以外は壁がある
+  MAZE.walls[0][0] = 0b11101110;
+  // 初期位置は通過済み
+  MAZE.passed[0][0] = 1;
+
+  // 迷路の状態を表示
+  print_maze();
+}
+
+// ----------------------------------------------------------------------
+void decide_direction() {
+  // 現在の方向を決定（左手法）
+  if (SS_L <= WALL_TV ) {
+    switch (MAZE.direction) {
+      case DIR_NORTH:
+        MAZE.direction = DIR_WEST; // 北から西に進む
+        break;
+      case DIR_EAST:
+        MAZE.direction = DIR_NORTH; // 東から北に進む
+        break;
+      case DIR_SOUTH:
+        MAZE.direction = DIR_EAST; // 南から東に進む
+        break;
+      case DIR_WEST:
+        MAZE.direction = DIR_SOUTH; // 西から南に進む
+        break;
+    }
+    go_left();
+  }
+  else if (SS_FL <= WALL_TV) {
+    switch (MAZE.direction) {
+      case DIR_NORTH:
+        MAZE.direction = DIR_NORTH;
+        break;
+      case DIR_EAST:
+        MAZE.direction = DIR_EAST;
+        break;
+      case DIR_SOUTH:
+        MAZE.direction = DIR_SOUTH;
+        break;
+      case DIR_WEST:
+        MAZE.direction = DIR_WEST;
+        break;
+    }
+    go_forward();
+  }
+  else if (SS_R <= WALL_TV) {
+    switch (MAZE.direction) {
+      case DIR_NORTH:
+        MAZE.direction = DIR_EAST; // 北から東に進む
+        break;
+      case DIR_EAST:
+        MAZE.direction = DIR_SOUTH; // 東から南に進む
+        break;
+      case DIR_SOUTH:
+        MAZE.direction = DIR_WEST; // 南から西に進む
+        break;
+      case DIR_WEST:
+        MAZE.direction = DIR_NORTH; // 西から北に進む
+        break;
+    }
+    go_right();
+  }
+  else {
+    switch (MAZE.direction) {
+      case DIR_NORTH:
+        MAZE.direction = DIR_SOUTH;
+        break;
+      case DIR_EAST:
+        MAZE.direction = DIR_WEST;
+        break;
+      case DIR_SOUTH:
+        MAZE.direction = DIR_NORTH;
+        break;
+      case DIR_WEST:
+        MAZE.direction = DIR_EAST;
+        break;
+    }
+    go_uturn();
+  }
+  update_pos_and_walls(); // 現在位置と壁の状態を更新
+  // デバッグ用
+  print_maze();
+
+  // ゴール判定
+  if (MAZE.x == MAZE.goal_x && MAZE.y == MAZE.goal_y) {
+    Serial.println("Goal Reached!");
+    flash_alternate(25); // ゴール到達時にLEDを点滅
+    while (1); // 無限ループで停止
+  }
+}
+
+// ----------------------------------------------------------------------
+void go_forward() {
+  // 180mm 前進
+  run_to_mm(180.0);
+}
+
+// ----------------------------------------------------------------------
+void go_left() {
+  run_to_mm(40.0);
+  delay(100);
+  spinturn(-90.0);
+  delay(100);
+  //run_to_mm(-40.0);
+  //run_to_mm(180.0);
+  run_to_mm(-40.0 + 180.0);
+}
+
+// ----------------------------------------------------------------------
+void go_right() {
+  run_to_mm(40.0);
+  delay(100);
+  spinturn(90.0);
+  delay(100);
+  //run_to_mm(-40.0);
+  //run_to_mm(180.0);
+  run_to_mm(-40.0 + 180.0);
+}
+
+// ----------------------------------------------------------------------
+void go_uturn() {
+  // Uターン
+  run_to_mm(40.0);
+  delay(100);
+  spinturn(180.0);
+  delay(100);
+  //run_to_mm(-40.0);
+  //run_to_mm(180.0);
+  run_to_mm(-40.0 + 180.0);
+}
+
+// ----------------------------------------------------------------------
+void update_pos_and_walls() {
+  // 現在位置の更新
+  switch (MAZE.direction) {
+    case DIR_NORTH:
+      MAZE.y++; // 北に進んだ場合
+      break;
+    case DIR_EAST:
+      MAZE.x++; // 東に進んだ場合
+      break;
+    case DIR_SOUTH:
+      MAZE.y--; // 南に進んだ場合
+      break;
+    case DIR_WEST:
+      MAZE.x--; // 西に進んだ場合
+      break;
+  }
+  // セルを通過済みにする
+  MAZE.passed[MAZE.x][MAZE.y] = 1;
+  // 壁の状態を調べる
+  uint8_t walls = 0;
+  if (SS_FL > WALL_TV) {
+    walls |= 0b00010001; // 北の壁がある
+  }
+  if (SS_R > WALL_TV) {
+    walls |= 0b10001000; // 東の壁がある
+  }
+  if (SS_L > WALL_TV) {
+    walls |= 0b00100010; // 西の壁がある
+  }
+  // 壁の状態を更新
+  switch (MAZE.direction) {
+    case DIR_NORTH:
+      MAZE.walls[MAZE.x][MAZE.y] = walls;
+      break;
+    case DIR_EAST:
+      MAZE.walls[MAZE.x][MAZE.y] = rotate_left(walls, DIR_EAST);
+      break;
+    case DIR_SOUTH:
+      MAZE.walls[MAZE.x][MAZE.y] = rotate_left(walls, DIR_SOUTH);
+      break;
+    case DIR_WEST:
+      MAZE.walls[MAZE.x][MAZE.y] = rotate_left(walls, DIR_WEST);
+      break;
+  }
+}
+
+// ----------------------------------------------------------------------
+// nビット左ローテーションする関数
+uint8_t rotate_left(uint8_t x, uint8_t n) {
+    return (x << n) | (x >> (8 - n));
+}
+
+// ----------------------------------------------------------------------
+void print_maze() {
+  lcd.setCursor(0, 0);
+  lcd.print(MAZE.x);
+  lcd.print(" ");
+  lcd.setCursor(3, 0);
+  lcd.print(MAZE.y);
+  lcd.print(" ");
+  // 通過済みセルの状態を表示
+  Serial.println("Passed Cells:");
+  for (uint8_t y = MAZE_SIZE - 1; y < MAZE_SIZE; y--) {
+    for (uint8_t x = 0; x < MAZE_SIZE; x++) {
+      if (MAZE.passed[x][y]) {
+        Serial.print("1 ");
+      } else {
+        Serial.print("0 ");
+      }
+    }
+    Serial.println();
+  }
+  // 迷路の状態を表示
+  Serial.println("Maze:");
+  for (uint8_t y = MAZE_SIZE - 1; y < MAZE_SIZE; y--) {
+    for (uint8_t x = 0; x < MAZE_SIZE; x++) {
+      // 北の壁
+      if (MAZE.walls[x][y] & 0b00010001) {
+        Serial.print("###");
+      }
+      else {
+        Serial.print("# #");
+      }
+    }
+    Serial.println();
+    for (uint8_t x = 0; x < MAZE_SIZE; x++) {
+      if (MAZE.walls[x][y] & 0b00100010) { // 西の壁
+        Serial.print("#");
+      }
+      else {
+        Serial.print(" ");
+      }
+      if (MAZE.x == x && MAZE.y == y) { // マウスの位置
+        switch (MAZE.direction) {
+          case DIR_NORTH:
+            Serial.print("^");
+            break;
+          case DIR_EAST:
+            Serial.print(">");
+            break;
+          case DIR_SOUTH:
+            Serial.print("v");
+            break;
+          case DIR_WEST:
+            Serial.print("<");
+            break;
+        }
+      }
+      else {
+        Serial.print(" ");
+      }
+      if (MAZE.walls[x][y] & 0b10001000) { // 東の壁
+        Serial.print("#");
+      }
+      else {
+        Serial.print(" ");
+      }
+    }
+    Serial.println();
+    for (uint8_t x = 0; x < MAZE_SIZE; x++) {
+      // 南の壁
+      if (MAZE.walls[x][y] & 0b01000100) {
+        Serial.print("###");
+      }
+      else {
+        Serial.print("# #");
+      }
+    }
+    Serial.println();
+  }
+}

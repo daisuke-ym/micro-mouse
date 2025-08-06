@@ -37,16 +37,18 @@ void setup() {
   // センサの値を出力するタスク
   //xTaskCreateUniversal(print_sensor, "task_print_sensor", 8192, NULL, 1, NULL, APP_CPU_NUM);
   // ステッパの値を出力するタスク
-  xTaskCreatePinnedToCore(print_steps, "task_print_steps", 8192, NULL, 1, NULL, APP_CPU_NUM);
+  //xTaskCreatePinnedToCore(print_steps, "task_print_steps", 8192, NULL, 1, NULL, APP_CPU_NUM);
   // BNO055 の値を読むタスク
   xTaskCreatePinnedToCore(read_bno, "task_read_bno", 8192, NULL, 1, NULL, APP_CPU_NUM);
+
+  // 迷路の初期化
+  init_maze();
 }
 
 // ----------------------------------------------------------------------
 void loop() {
-  test_run_to_mm();
-  test_spinturn();
-  //test_spinturn_imu();
+  test_decide_direction();
+  test_decide_direction_nowait();
 }
 
 // ----------------------------------------------------------------------
@@ -67,6 +69,20 @@ void flash_led(int led, int count) {
     digitalWrite(LED, HIGH);
     delay(50);
     digitalWrite(LED, LOW);
+    delay(50);
+  }
+}
+
+// ----------------------------------------------------------------------
+void flash_alternate(int count) {
+  for (int i = 0; i < count; i++) {
+    digitalWrite(LED1, HIGH);
+    delay(50);
+    digitalWrite(LED1, LOW);
+    delay(50);
+    digitalWrite(LED2, HIGH);
+    delay(50);
+    digitalWrite(LED2, LOW);
     delay(50);
   }
 }

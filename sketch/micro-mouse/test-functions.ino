@@ -1,4 +1,24 @@
 // ----------------------------------------------------------------------
+void test_decide_direction() {
+  if (digitalRead(SW2) == LOW) {
+    delay(1000);
+    decide_direction();
+    flash_led(2, 5);
+  }
+}
+
+// ----------------------------------------------------------------------
+void test_decide_direction_nowait() {
+  if (digitalRead(SW1) == LOW) {
+    delay(1000);
+    while (1) {
+      decide_direction();
+      delay(1000); // 1秒ごとに方向を決定}
+    }
+  }
+}
+
+// ----------------------------------------------------------------------
 void test_run_to_mm() {
   if (digitalRead(SW2) == LOW) {
     delay(1000);
