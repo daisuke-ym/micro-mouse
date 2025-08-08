@@ -205,8 +205,8 @@ void print_maze() {
   lcd.print(" ");
   // 通過済みセルの状態を表示
   SERIAL_OUT.println("Passed Cells:");
-  for (uint8_t y = MAZE_SIZE - 1; y < MAZE_SIZE; y--) {
-    for (uint8_t x = 0; x < MAZE_SIZE; x++) {
+  for (int y = MAZE_SIZE - 1; y >= 0; y--) {
+    for (int x = 0; x < MAZE_SIZE; x++) {
       if (MAZE.passed[x][y]) {
         SERIAL_OUT.printf("%2d", MAZE.passed[x][y]);
       } else {
@@ -217,8 +217,8 @@ void print_maze() {
   }
   // 迷路の状態を表示
   SERIAL_OUT.println("Maze:");
-  for (uint8_t y = MAZE_SIZE - 1; y < MAZE_SIZE; y--) {
-    for (uint8_t x = 0; x < MAZE_SIZE; x++) {
+  for (int y = MAZE_SIZE - 1; y >= 0; y--) {
+    for (int x = 0; x < MAZE_SIZE; x++) {
       // 北の壁
       if (MAZE.passed[x][y]) { // 通過済みセルは壁を表示する
         if (MAZE.walls[x][y] & 0b00010001) {
@@ -272,7 +272,7 @@ void print_maze() {
       }
     }
     SERIAL_OUT.println();
-    for (uint8_t x = 0; x < MAZE_SIZE; x++) {
+    for (int x = 0; x < MAZE_SIZE; x++) {
       // 南の壁
       if (MAZE.passed[x][y]) { // 通過済みセルは壁を表示する
         if (MAZE.walls[x][y] & 0b01000100) {
