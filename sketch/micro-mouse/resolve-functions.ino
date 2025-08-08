@@ -11,8 +11,8 @@ void resolve_shortest_path() {
 // ----------------------------------------------------------------------
 void make_contour_map() {
   // テストデータをコピー
-  MAZE = TMAZE;
-  print_maze();
+  //MAZE = TMAZE;
+  //print_maze();
 
   // 等高線図を初期化
   for (uint8_t y = 0; y < MAZE_SIZE; y++) {
@@ -23,33 +23,12 @@ void make_contour_map() {
   CONTOUR_MAP[MAZE_GOAL_X][MAZE_GOAL_Y] = 0; // ゴール位置は0
 
   int current_value = 0;
-  print_contour_map(); // デバッグ用に初期状態を表示
-  while (1) {
-    if (digitalRead(SW2) == LOW) {
-      delay(20);
-      if (digitalRead(SW2) == LOW) {
-        break;
-      }
-    }
-  }
-  delay(500);
-
   while (update_contour_map(current_value) != 0) {
-    print_contour_map(); // デバッグ用に等高線図を表示
-    while (1) {
-      if (digitalRead(SW2) == LOW) {
-        delay(20);
-        if (digitalRead(SW2) == LOW) {
-          break;
-        }
-      }
-    }
-    delay(500);
     current_value++;
     SERIAL_OUT.printf("Current value: %d", current_value);
     SERIAL_OUT.println();
   }
-  SERIAL_OUT.println("Contour map completed.");
+
   print_contour_map(); // デバッグ用に等高線図を表示
 }
 
