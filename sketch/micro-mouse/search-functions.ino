@@ -158,7 +158,7 @@ void update_pos_and_walls() {
       break;
   }
   // セルを通過済みにする
-  MAZE.passed[MAZE.x][MAZE.y] = 1;
+  MAZE.passed[MAZE.x][MAZE.y] += 1;
   // 壁の状態を調べる
   uint8_t walls = 0;
   if (SS_FL > WALL_TV) {
@@ -206,9 +206,9 @@ void print_maze() {
   for (uint8_t y = MAZE_SIZE - 1; y < MAZE_SIZE; y--) {
     for (uint8_t x = 0; x < MAZE_SIZE; x++) {
       if (MAZE.passed[x][y]) {
-        SERIAL_OUT.print("1 ");
+        SERIAL_OUT.printf("%2d", MAZE.passed[x][y]);
       } else {
-        SERIAL_OUT.print("0 ");
+        SERIAL_OUT.printf("%2d", 0);
       }
     }
     SERIAL_OUT.println();
@@ -218,7 +218,7 @@ void print_maze() {
   for (uint8_t y = MAZE_SIZE - 1; y < MAZE_SIZE; y--) {
     for (uint8_t x = 0; x < MAZE_SIZE; x++) {
       // 北の壁
-      if (MAZE.passed[x][y] == 1) { // 通過済みセルは壁を表示する
+      if (MAZE.passed[x][y]) { // 通過済みセルは壁を表示する
         if (MAZE.walls[x][y] & 0b00010001) {
           SERIAL_OUT.print("###");
         }
@@ -232,7 +232,7 @@ void print_maze() {
     }
     SERIAL_OUT.println();
     for (uint8_t x = 0; x < MAZE_SIZE; x++) {
-      if (MAZE.passed[x][y] == 1) { // 通過済みセルは壁を表示する
+      if (MAZE.passed[x][y]) { // 通過済みセルは壁を表示する
         if (MAZE.walls[x][y] & 0b00100010) { // 西の壁
           SERIAL_OUT.print("#");
         }
@@ -272,7 +272,7 @@ void print_maze() {
     SERIAL_OUT.println();
     for (uint8_t x = 0; x < MAZE_SIZE; x++) {
       // 南の壁
-      if (MAZE.passed[x][y] == 1) { // 通過済みセルは壁を表示する
+      if (MAZE.passed[x][y]) { // 通過済みセルは壁を表示する
         if (MAZE.walls[x][y] & 0b01000100) {
           SERIAL_OUT.print("###");
         }
