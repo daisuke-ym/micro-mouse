@@ -40,6 +40,7 @@ Unistep2_mod stepperR(STP2P1, STP2P2, STP2P3, STP2P4, 4096, DEFAULT_STEP_DELAY);
 // Bluetooth シリアル
 BluetoothSerial SerialBT;
 #define SERIAL_OUT SerialBT
+//#define SERIAL_OUT Serial
 
 // AQM1602Y LCD
 ST7032_asukiaaa lcd;
