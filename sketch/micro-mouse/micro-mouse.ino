@@ -1,3 +1,4 @@
+#include <BluetoothSerial.h>
 #include <Unistep2_mod.h>
 #include <ST7032_asukiaaa.h>
 #include <math.h>
@@ -9,6 +10,7 @@
 void setup() {
   // serial
   Serial.begin(115200);
+  SerialBT.begin("ESP32_MicroMouse"); // Bluetooth シリアルの初期化
   // センサの初期設定
   analogReadResolution(12);
   pinMode(SENSOR_FL, INPUT);
@@ -40,6 +42,8 @@ void setup() {
   //xTaskCreatePinnedToCore(print_steps, "task_print_steps", 8192, NULL, 1, NULL, APP_CPU_NUM);
   // BNO055 の値を読むタスク
   xTaskCreatePinnedToCore(read_bno, "task_read_bno", 8192, NULL, 1, NULL, APP_CPU_NUM);
+  // Bluetooth に値を出力するタスク
+  //xTaskCreatePinnedToCore(print_serialbt, "task_print_serialbt", 8192, NULL, 1, NULL, APP_CPU_NUM);
 
   // 迷路の初期化
   init_maze();
@@ -156,5 +160,14 @@ void read_bno(void *pvParameters) {
     */
     // Task を回すうえで必ず必要な delay
     delay(10);
+  }
+}
+
+// ----------------------------------------------------------------------
+void print_serialbt(void *pvParameters) {
+  while (1) {
+    SerialBT.println(millis());
+    // Task を回すうえで必ず必要な delay
+    delay(1000);
   }
 }

@@ -37,6 +37,10 @@ const unsigned long DEFAULT_STEP_DELAY = 1000;
 Unistep2_mod stepperL(STP1P1, STP1P4, STP1P3, STP1P2, 4096, DEFAULT_STEP_DELAY); // stepperR と回転方向を合わせるため P2 と P4 を入れ替えている
 Unistep2_mod stepperR(STP2P1, STP2P2, STP2P3, STP2P4, 4096, DEFAULT_STEP_DELAY);
 
+// Bluetooth シリアル
+BluetoothSerial SerialBT;
+#define SERIAL_OUT SerialBT
+
 // AQM1602Y LCD
 ST7032_asukiaaa lcd;
 
