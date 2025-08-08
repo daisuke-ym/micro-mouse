@@ -1,20 +1,19 @@
 // ----------------------------------------------------------------------
 void test_decide_direction() {
-  if (digitalRead(SW2) == LOW) {
-    delay(1000);
-    decide_direction();
-    flash_led(2, 5);
-  }
-}
-
-// ----------------------------------------------------------------------
-void test_decide_direction_nowait() {
   if (digitalRead(SW1) == LOW) {
     delay(1000);
-    while (1) {
-      decide_direction();
-      delay(1000); // 1秒ごとに方向を決定}
+    // ゴールを目指す
+    while (decide_direction(MAZE_GOAL_X, MAZE_GOAL_Y) != 0) {
+      delay(250);
     }
+    flash_alternate(20); // 目標到達時にLEDを点滅
+    delay(2000);
+    // スタート地点を目指す
+    while (decide_direction(0, 0) != 0) {
+      delay(250);
+    }
+    flash_alternate(20); // 目標到達時にLEDを点滅
+    delay(2000);
   }
 }
 

@@ -63,12 +63,13 @@ const int WALL_TV = 1000; // 壁があるとみなすセンサ値の閾値
 
 // 迷路の大きさ
 #define MAZE_SIZE 4
+// 迷路のゴール座標
+#define MAZE_GOAL_X 3
+#define MAZE_GOAL_Y 3
 // 迷路の構造を表す構造体
 struct _MAZE {
   uint8_t x; // マウスの現在位置 X
   uint8_t y; // マウスの現在位置 Y
-  uint8_t goal_x; // ゴール位置 X
-  uint8_t goal_y; // ゴール位置 Y
   uint8_t walls[MAZE_SIZE][MAZE_SIZE]; // 迷路の壁を表す2次元配列
   // 壁の状態を表すビットフラグ
   // 壁ありは1、壁なしは0
@@ -81,8 +82,6 @@ struct _MAZE {
 struct _MAZE MAZE = {
   .x = 0,
   .y = 0,
-  .goal_x = 3,
-  .goal_y = 3,
   .direction = DIR_NORTH
 };
 

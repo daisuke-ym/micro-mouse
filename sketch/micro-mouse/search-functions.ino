@@ -18,7 +18,7 @@ void init_maze() {
 }
 
 // ----------------------------------------------------------------------
-void decide_direction() {
+int decide_direction(uint8_t goal_x, uint8_t goal_y) {
   // 現在の方向を決定（左手法）
   if (SS_L <= WALL_TV ) {
     switch (MAZE.direction) {
@@ -93,10 +93,12 @@ void decide_direction() {
   print_maze();
 
   // ゴール判定
-  if (MAZE.x == MAZE.goal_x && MAZE.y == MAZE.goal_y) {
+  if (MAZE.x == goal_x && MAZE.y == goal_y) {
     SERIAL_OUT.println("Goal Reached!");
-    flash_alternate(25); // ゴール到達時にLEDを点滅
-    while (1); // 無限ループで停止
+    return 0;
+  }
+  else {
+    return -1;
   }
 }
 
