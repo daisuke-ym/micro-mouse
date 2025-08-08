@@ -18,6 +18,14 @@ void test_decide_direction() {
 }
 
 // ----------------------------------------------------------------------
+void test_make_contour_map() {
+  if (digitalRead(SW2) == LOW) {
+    delay(1000);
+    make_contour_map();
+  }
+}
+
+// ----------------------------------------------------------------------
 void test_run_to_mm() {
   if (digitalRead(SW2) == LOW) {
     delay(1000);
