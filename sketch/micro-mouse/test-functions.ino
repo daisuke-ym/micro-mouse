@@ -22,6 +22,7 @@ void test_make_contour_map() {
   if (digitalRead(SW2) == LOW) {
     delay(1000);
     make_contour_map();
+    resolve_shortest_path();
   }
 }
 

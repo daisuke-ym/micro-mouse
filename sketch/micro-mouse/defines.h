@@ -39,8 +39,8 @@ Unistep2_mod stepperR(STP2P1, STP2P2, STP2P3, STP2P4, 4096, DEFAULT_STEP_DELAY);
 
 // Bluetooth シリアル
 BluetoothSerial SerialBT;
-#define SERIAL_OUT SerialBT
-//#define SERIAL_OUT Serial
+//#define SERIAL_OUT SerialBT
+#define SERIAL_OUT Serial
 
 // AQM1602Y LCD
 ST7032_asukiaaa lcd;
@@ -58,6 +58,15 @@ enum Direction {
   DIR_SOUTH = 2, // 南
   DIR_EAST  = 3, // 東
 };
+
+// 最短経路を辿るときの方向を示すenum
+enum ShortestPathToGo {
+  GOTO_FORWARD = 0, // 前進
+  GOTO_LEFT    = 1, // 左回り
+  GOTO_RIGHT   = 2, // 右回り
+  GOTO_BACK    = 3, // 後退(未使用)
+};
+char GOTO_STR[] = {'F', 'L', 'R', 'B'};
 
 // 壁があるかどうかの閾値
 const int WALL_TV = 1000; // 壁があるとみなすセンサ値の閾値
