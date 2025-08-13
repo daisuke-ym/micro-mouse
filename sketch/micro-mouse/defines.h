@@ -5,11 +5,16 @@ const int SENSOR_R  = 39;
 const int SENSOR_FR = 36;
 const int IRLED_R_FL = 27;
 const int IRLED_L_FR = 14;
-// センサの値
+// センサの値(現在値)
 volatile int SS_FL = 0;
 volatile int SS_L = 0;
 volatile int SS_R = 0;
 volatile int SS_FR = 0;
+// センサの初期値（スタート位置での値）
+int INIT_SS_FL;
+int INIT_SS_L;
+int INIT_SS_R;
+int INIT_SS_FR;
 // スイッチとLED
 const int SW1 = 19;
 const int SW2 = 13;
@@ -124,3 +129,22 @@ struct _MAZE TMAZE = {
              {1, 1, 1, 1}},
   .direction = DIR_NORTH
 };
+
+// ----------------------------------------------------------------------
+// 壁センサ(SS_L)の値と壁までの距離マップ
+const int WALL_DIST[] = {
+  3810, // 0mm
+  3730, // 5mm
+  3600, // 10mm
+  3140, // 15mm
+  2590, // 20mm
+  2280, // 25mm
+  1990, // 30mm
+  1765, // 35mm
+  1525, // 40mm
+  1390, // 45mm
+  1260, // 50mm
+  1170, // 53mm
+};
+// 通路中央に置いたときの SS_L の値(壁まで28㎜)
+const int SS_L_CENTER = 2100;

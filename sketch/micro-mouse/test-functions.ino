@@ -66,3 +66,30 @@ void test_spinturn_imu() {
     flash_led(2, 5);
   }
 }
+
+// ----------------------------------------------------------------------
+void test_get_sensor_init_value() {
+  if (digitalRead(SW2) == LOW) {
+    delay(1000);
+    get_sensor_init_value();
+    flash_led(2, 5);
+  }
+}
+
+// ----------------------------------------------------------------------
+void test_get_sensor_value_while_rotating() {
+  if (digitalRead(SW1) == LOW) {
+    delay(1000);
+    get_sensor_value_while_rotating();
+    flash_led(1, 5);
+  }
+}
+
+// ----------------------------------------------------------------------
+void test_adjust_to_center() {
+  if (digitalRead(SW2) == LOW) {
+    delay(1000);
+    adjust_to_center();
+    flash_led(2, 5);
+  }
+}

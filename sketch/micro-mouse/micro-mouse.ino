@@ -37,7 +37,7 @@ void setup() {
   // センサの値を読むタスク
   xTaskCreateUniversal(read_sensor, "task_read_sensor", 8192, NULL, 1, NULL, APP_CPU_NUM);
   // センサの値を出力するタスク
-  //xTaskCreateUniversal(print_sensor, "task_print_sensor", 8192, NULL, 1, NULL, APP_CPU_NUM);
+  xTaskCreateUniversal(print_sensor, "task_print_sensor", 8192, NULL, 1, NULL, APP_CPU_NUM);
   // ステッパの値を出力するタスク
   //xTaskCreatePinnedToCore(print_steps, "task_print_steps", 8192, NULL, 1, NULL, APP_CPU_NUM);
   // BNO055 の値を読むタスク
@@ -52,7 +52,10 @@ void setup() {
 // ----------------------------------------------------------------------
 void loop() {
   test_decide_direction();
-  test_make_contour_map();
+  //test_make_contour_map();
+  //test_get_sensor_value_while_rotating();
+  test_adjust_to_center();
+  //test_get_sensor_init_value();
 }
 
 // ----------------------------------------------------------------------
@@ -93,24 +96,10 @@ void read_sensor(void *pvParameters) {
 // ----------------------------------------------------------------------
 void print_sensor(void *pvParameters) {
   while (1) {
-    lcd.setCursor(0, 0);
-    lcd.print(SS_FL); lcd.print("   ");
-    lcd.setCursor(12, 0);
-    lcd.print(SS_FR); lcd.print("   ");
-    lcd.setCursor(0, 1);
-    lcd.print(SS_L); lcd.print("   ");
-    lcd.setCursor(12, 1);
-    lcd.print(SS_R); lcd.print("   ");
-    //
-    lcd.setCursor(6, 0);
-    lcd.print(abs(SS_FL - SS_FR)); lcd.print("  ");
-    lcd.setCursor(6, 1);
-    if (SS_FL >= SS_FR) {
-      lcd.print(">");
-    }
-    else {
-      lcd.print("<");
-    }
+    lcd.setCursor(7, 0);
+    lcd.printf("%4d %4d", SS_FL, SS_FR);
+    lcd.setCursor(7, 1);
+    lcd.printf("%4d %4d", SS_L, SS_R);
     /*
     Serial.print(SS_L);
     Serial.print("\t");
