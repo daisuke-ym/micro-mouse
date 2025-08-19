@@ -100,13 +100,13 @@ struct _MAZE MAZE = {
   .direction = DIR_NORTH
 };
 
-// 等高線図
-uint8_t CONTOUR_MAP[MAZE_SIZE][MAZE_SIZE];
+// 歩数図
+uint8_t STEPS_MAP[MAZE_SIZE][MAZE_SIZE];
 
 // 最短経路
 int SHORTEST_PATH[MAZE_SIZE * MAZE_SIZE];
 
-// 等高線図作成用のテストデータ
+// 歩数図作成用のテストデータ
 // +-+-+-+-+
 // | |     |
 // + +-+ +-+

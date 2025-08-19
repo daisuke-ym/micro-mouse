@@ -18,10 +18,10 @@ void test_decide_direction() {
 }
 
 // ----------------------------------------------------------------------
-void test_make_contour_map() {
+void test_make_steps_map() {
   if (digitalRead(SW2) == LOW) {
     delay(1000);
-    make_contour_map();
+    make_steps_map();
     resolve_shortest_path();
   }
 }

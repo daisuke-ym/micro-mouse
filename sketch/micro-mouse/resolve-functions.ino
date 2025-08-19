@@ -4,13 +4,13 @@
 
 // ----------------------------------------------------------------------
 void resolve_shortest_path() {
-  // 等高線図から最短経路を求める
+  // 歩数図から最短経路を求める
   int x = 0;
   int y = 0;
   int next_x = 0;
   int next_y = 0;
   int path_length = 0;
-  int path_value = CONTOUR_MAP[x][y]; // スタート地点の値
+  int path_value = STEPS_MAP[x][y]; // スタート地点の値
   int direction = DIR_NORTH; // 今向いている方向
 
   // SHORTEST_PATH を初期化
@@ -22,7 +22,7 @@ void resolve_shortest_path() {
   do {
     //SERIAL_OUT.printf("  Searching value: %d from (%d, %d)\n", path_value - 1, x, y);
     if (y + 1 < MAZE_SIZE) { // 境界チェック
-      if (CONTOUR_MAP[x][y + 1] == path_value - 1) { // 北
+      if (STEPS_MAP[x][y + 1] == path_value - 1) { // 北
         next_x = x;
         next_y = y + 1;
         switch (direction) {
@@ -44,7 +44,7 @@ void resolve_shortest_path() {
       }
     }
     if (x - 1 >= 0) { // 境界チェック
-      if (CONTOUR_MAP[x - 1][y] == path_value - 1) { // 西
+      if (STEPS_MAP[x - 1][y] == path_value - 1) { // 西
         next_x = x - 1;
         next_y = y;
         switch (direction) {
@@ -66,7 +66,7 @@ void resolve_shortest_path() {
       }
     }
     if (y - 1 >= 0) { // 境界チェック
-      if (CONTOUR_MAP[x][y - 1] == path_value - 1) { // 南
+      if (STEPS_MAP[x][y - 1] == path_value - 1) { // 南
         next_x = x;
         next_y = y - 1;
         switch (direction) {
@@ -88,7 +88,7 @@ void resolve_shortest_path() {
       }
     }
     if (x + 1 < MAZE_SIZE) { // 境界チェック
-      if (CONTOUR_MAP[x + 1][y] == path_value - 1) { // 東
+      if (STEPS_MAP[x + 1][y] == path_value - 1) { // 東
         next_x = x + 1;
         next_y = y;
         switch (direction) {
@@ -130,65 +130,65 @@ void print_shortest_path() {
 }
 
 // ----------------------------------------------------------------------
-void make_contour_map() {
+void make_steps_map() {
   // テストデータをコピー
   MAZE = TMAZE;
   print_maze();
 
-  // 等高線図を初期化
+  // 歩数図を初期化
   for (uint8_t y = 0; y < MAZE_SIZE; y++) {
     for (uint8_t x = 0; x < MAZE_SIZE; x++) {
-      CONTOUR_MAP[x][y] = 255;
+      STEPS_MAP[x][y] = 255;
     }
   }
-  CONTOUR_MAP[MAZE_GOAL_X][MAZE_GOAL_Y] = 0; // ゴール位置は0
+  STEPS_MAP[MAZE_GOAL_X][MAZE_GOAL_Y] = 0; // ゴール位置は0
 
   int current_value = 0;
-  while (update_contour_map(current_value) != 0) {
+  while (update_steps_map(current_value) != 0) {
     current_value++;
     SERIAL_OUT.printf("Current value: %d", current_value);
     SERIAL_OUT.println();
   }
 
-  print_contour_map(); // デバッグ用に等高線図を表示
+  print_steps_map(); // デバッグ用に歩数図を表示
 }
 
 // ----------------------------------------------------------------------
-int update_contour_map(uint8_t value) {
+int update_steps_map(uint8_t value) {
   for (int y = 0; y < MAZE_SIZE; y++) {
     for (int x = 0; x < MAZE_SIZE; x++) {
-      if (CONTOUR_MAP[x][y] == value) {
+      if (STEPS_MAP[x][y] == value) {
         //SERIAL_OUT.printf("Updating contour map at (%d, %d) with value %d", x, y, value);
         //SERIAL_OUT.println();
         // 周囲の壁を調査
         if ((MAZE.walls[x][y] & 0b00010001) == 0) { // 北の壁
           if (y + 1 < MAZE_SIZE) { // 配列の範囲外チェック
-            if (MAZE.passed[x][y + 1] != 0 && CONTOUR_MAP[x][y + 1] == 255) { // 通過済みセル and 等高線が更新されてない場合
-              CONTOUR_MAP[x][y + 1] = value + 1;
+            if (MAZE.passed[x][y + 1] != 0 && STEPS_MAP[x][y + 1] == 255) { // 通過済みセル and 等高線が更新されてない場合
+              STEPS_MAP[x][y + 1] = value + 1;
               if (x == 0 && (y + 1) == 0) return 0; // スタート地点に到達したら終了
             }
           }
         }
         if ((MAZE.walls[x][y] & 0b00100010) == 0) { // 西の壁
           if (x - 1 >= 0) { // 配列の範囲外チェック
-            if (MAZE.passed[x - 1][y] != 0 && CONTOUR_MAP[x - 1][y] == 255) { // 通過済みセル and 等高線が更新されてない場合
-              CONTOUR_MAP[x - 1][y] = value + 1;
+            if (MAZE.passed[x - 1][y] != 0 && STEPS_MAP[x - 1][y] == 255) { // 通過済みセル and 等高線が更新されてない場合
+              STEPS_MAP[x - 1][y] = value + 1;
               if ((x - 1) == 0 && y == 0) return 0; // スタート地点に到達したら終了
             }
           } 
         }
         if ((MAZE.walls[x][y] & 0b01000100) == 0) { // 南の壁
           if (y - 1 >= 0) { // 配列の範囲外チェック
-            if (MAZE.passed[x][y - 1] != 0 && CONTOUR_MAP[x][y - 1] == 255) { // 通過済みセル and 等高線が更新されてない場合
-              CONTOUR_MAP[x][y - 1] = value + 1;
+            if (MAZE.passed[x][y - 1] != 0 && STEPS_MAP[x][y - 1] == 255) { // 通過済みセル and 等高線が更新されてない場合
+              STEPS_MAP[x][y - 1] = value + 1;
               if (x == 0 && (y - 1) == 0) return 0; // スタート地点に到達したら終了
             }
           }
         }
         if ((MAZE.walls[x][y] & 0b10001000) == 0) { // 東の壁
           if (x + 1 < MAZE_SIZE) { // 配列の範囲外チェック
-            if (MAZE.passed[x + 1][y] != 0 && CONTOUR_MAP[x + 1][y] == 255) { // 通過済みセル and 等高線が更新されてない場合
-              CONTOUR_MAP[x + 1][y] = value + 1;
+            if (MAZE.passed[x + 1][y] != 0 && STEPS_MAP[x + 1][y] == 255) { // 通過済みセル and 等高線が更新されてない場合
+              STEPS_MAP[x + 1][y] = value + 1;
               if ((x + 1) == 0 && y == 0) return 0; // スタート地点に到達したら終了
             }
           }
@@ -200,10 +200,10 @@ int update_contour_map(uint8_t value) {
 }
 
 // ----------------------------------------------------------------------
-void print_contour_map() {
+void print_steps_map() {
   for (int y = MAZE_SIZE -1 ; y >= 0; y--) {
     for (int x = 0; x < MAZE_SIZE; x++) {
-      SERIAL_OUT.printf("%4d ", CONTOUR_MAP[x][y]);
+      SERIAL_OUT.printf("%4d ", STEPS_MAP[x][y]);
     }
     SERIAL_OUT.println();
   }

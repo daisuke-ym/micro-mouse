@@ -53,7 +53,7 @@ void setup() {
 // ----------------------------------------------------------------------
 void loop() {
   test_decide_direction();
-  //test_make_contour_map();
+  //test_make_steps_map();
   //test_get_sensor_value_while_rotating();
   test_adjust_to_center();
   //test_get_sensor_init_value();
