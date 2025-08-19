@@ -3,6 +3,35 @@
 */
 
 // ----------------------------------------------------------------------
+void run_shortest_path() {
+  int i = 0;
+
+  // 歩数図を作成
+  make_steps_map();
+  // 最短経路を求める
+  resolve_shortest_path();
+  // 最短経路を実行
+  while (SHORTEST_PATH[i] != -1) {
+    // 最短経路に従って移動
+    switch (SHORTEST_PATH[i]) {
+      case GOTO_FORWARD:
+        go_forward();
+        break;
+      case GOTO_LEFT:
+        go_left();
+        break;
+      case GOTO_RIGHT:
+        go_right();
+        break;
+      case GOTO_BACK:
+        go_uturn();
+        break;
+    }
+    i++;
+    delay(250);
+  }
+}
+// ----------------------------------------------------------------------
 void resolve_shortest_path() {
   // 歩数図から最短経路を求める
   int x = 0;
@@ -132,7 +161,7 @@ void print_shortest_path() {
 // ----------------------------------------------------------------------
 void make_steps_map() {
   // テストデータをコピー
-  MAZE = TMAZE;
+  //MAZE = TMAZE;
   print_maze();
 
   // 歩数図を初期化

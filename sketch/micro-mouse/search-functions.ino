@@ -18,7 +18,7 @@ void init_maze() {
 }
 
 // ----------------------------------------------------------------------
-int decide_direction(uint8_t goal_x, uint8_t goal_y) {
+int decide_direction_lefthand(uint8_t goal_x, uint8_t goal_y) {
   // 現在の方向を決定（左手法）
   if (SS_L <= WALL_TV ) {
     switch (MAZE.direction) {
