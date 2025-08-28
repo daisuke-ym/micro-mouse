@@ -44,8 +44,8 @@ Unistep2_mod stepperR(STP2P1, STP2P2, STP2P3, STP2P4, 4096, DEFAULT_STEP_DELAY);
 
 // Bluetooth シリアル
 BluetoothSerial SerialBT;
-//#define SERIAL_OUT SerialBT
-#define SERIAL_OUT Serial
+#define SERIAL_OUT SerialBT
+//#define SERIAL_OUT Serial
 
 // AQM1602Y LCD
 ST7032_asukiaaa lcd;
@@ -62,6 +62,14 @@ enum Direction {
   DIR_WEST  = 1, // 西
   DIR_SOUTH = 2, // 南
   DIR_EAST  = 3, // 東
+};
+
+// マウスから見た相対方向を示すenum
+enum RelativeDirection {
+  REL_FORWARD = 0, // 前方
+  REL_LEFT    = 1, // 左方
+  REL_RIGHT   = 2, // 右方
+  REL_BACK    = 3, // 後方
 };
 
 // 最短経路を辿るときの方向を示すenum

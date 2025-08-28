@@ -103,3 +103,28 @@ void test_adjust_to_center() {
     flash_led(2, 5);
   }
 }
+
+// ----------------------------------------------------------------------
+void test_decide_direction_tremaux() {
+  if (digitalRead(SW1) == LOW) {
+    delay(1000);
+    // ゴールを目指す
+    while (decide_direction_tremaux(MAZE_GOAL_X, MAZE_GOAL_Y) != 0) {
+      delay(250);
+    }
+    flash_alternate(20); // 目標到達時にLEDを点滅
+    delay(2000);
+    // スタート地点を目指す
+    // 通過情報を初期化
+    for (int i = 0; i < MAZE_SIZE; i++) {
+      for (int j = 0; j < MAZE_SIZE; j++) {
+        MAZE.passed[i][j] = 0;
+      }
+    }
+    while (decide_direction_tremaux(0, 0) != 0) {
+      delay(250);
+    }
+    flash_alternate(20); // 目標到達時にLEDを点滅
+    delay(2000);
+  }
+}

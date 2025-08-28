@@ -52,7 +52,13 @@ void setup() {
 
 // ----------------------------------------------------------------------
 void loop() {
-  test_decide_direction();
+  static unsigned long start_time = millis();
+
+  if (millis() - start_time > 2000) {
+    SERIAL_OUT.println(millis());
+    start_time = millis();
+  }
+  test_decide_direction_tremaux();
   test_run_shortest_path();
 }
 
