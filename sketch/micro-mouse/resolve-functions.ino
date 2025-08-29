@@ -7,9 +7,9 @@ void run_shortest_path() {
   int i = 0;
 
   // 歩数図を作成
-  make_steps_map();
+  make_steps_map(MAZE_GOAL_X, MAZE_GOAL_Y);
   // 最短経路を求める
-  resolve_shortest_path();
+  resolve_shortest_path(0, 0, DIR_NORTH);
   // 最短経路を実行
   while (SHORTEST_PATH[i] != -1) {
     // 最短経路に従って移動
@@ -31,16 +31,19 @@ void run_shortest_path() {
     delay(250);
   }
 }
+
 // ----------------------------------------------------------------------
-void resolve_shortest_path() {
+// 歩数図を基に指定位置からゴールまでの最短経路を求める関数
+// 
+void resolve_shortest_path(int start_x, int start_y, Direction start_dir) {
   // 歩数図から最短経路を求める
   int x = 0;
   int y = 0;
   int next_x = 0;
   int next_y = 0;
   int path_length = 0;
-  int path_value = STEPS_MAP[x][y]; // スタート地点の値
-  int direction = DIR_NORTH; // 今向いている方向
+  int path_value = STEPS_MAP[start_x][start_y]; // スタート地点の値
+  int direction = start_dir; // 今向いている方向
 
   // SHORTEST_PATH を初期化
   for (int i = 0; i < MAZE_SIZE * MAZE_SIZE; i++) {
@@ -159,7 +162,7 @@ void print_shortest_path() {
 }
 
 // ----------------------------------------------------------------------
-void make_steps_map() {
+void make_steps_map(int goal_x, int goal_y) {
   // テストデータをコピー
   //MAZE = TMAZE;
   print_maze();
@@ -170,7 +173,7 @@ void make_steps_map() {
       STEPS_MAP[x][y] = 255;
     }
   }
-  STEPS_MAP[MAZE_GOAL_X][MAZE_GOAL_Y] = 0; // ゴール位置は0
+  STEPS_MAP[goal_x][goal_y] = 0; // ゴール位置は0
 
   int current_value = 0;
   while (update_steps_map(current_value) != 0) {
