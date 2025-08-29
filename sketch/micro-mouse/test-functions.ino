@@ -115,12 +115,6 @@ void test_decide_direction_tremaux() {
     flash_alternate(20); // 目標到達時にLEDを点滅
     delay(2000);
     // スタート地点を目指す
-    // 通過情報を初期化
-    for (int i = 0; i < MAZE_SIZE; i++) {
-      for (int j = 0; j < MAZE_SIZE; j++) {
-        MAZE.passed[i][j] = 0;
-      }
-    }
     while (decide_direction_tremaux(0, 0) != 0) {
       delay(250);
     }

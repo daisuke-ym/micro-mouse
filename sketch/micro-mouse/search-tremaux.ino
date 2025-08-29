@@ -162,15 +162,15 @@ int get_passed(uint8_t x, uint8_t y, uint8_t direction1, uint8_t direction2) {
           break;
         case REL_LEFT:
           if (x + 1 < MAZE_SIZE && (MAZE.walls[x][y] & 0b10001000) == 0) {
-            return MAZE.passed[x - 1][y];
+            return MAZE.passed[x + 1][y];
           }
           else {
             return 255; // 境界外 or 壁あり
           }
           break;
         case REL_RIGHT:
-          if (x -1 >= 0 && (MAZE.walls[x][y] & 0b00100010) == 0) {
-            return MAZE.passed[x + 1][y];
+          if (x - 1 >= 0 && (MAZE.walls[x][y] & 0b00100010) == 0) {
+            return MAZE.passed[x - 1][y];
           }
           else {
             return 255; // 境界外 or 壁あり
