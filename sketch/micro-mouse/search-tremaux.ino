@@ -25,21 +25,21 @@ int decide_direction_tremaux(uint8_t goal_x, uint8_t goal_y) {
     update_direction(MAZE.direction, REL_RIGHT);
     go_right();
   }
-  else if (SS_L > WALL_TV && SS_R > WALL_TV && SS_FL > WALL_TV) { //&& get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_BACK) == 1) {
+  else if (SS_L > WALL_TV && SS_R > WALL_TV && SS_FL > WALL_TV) {
     // 三方壁で、後ろが一度だけ通ったならUターン
     SERIAL_OUT.printf("if 4: get_passed: %d\n", get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_BACK));
     update_direction(MAZE.direction, REL_BACK);
     go_uturn();
   }
   else if (SS_L <= WALL_TV && 
-            get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_LEFT) < get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_FORWARD) &&
-            get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_LEFT) < get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_RIGHT)) {
+            get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_LEFT) <= get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_FORWARD) &&
+            get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_LEFT) <= get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_RIGHT)) {
     // 左に壁がなく、左の通過回数が前・右より少ないなら左に曲がる
     SERIAL_OUT.printf("if 5: get_passed: %d %d %d\n", get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_LEFT), get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_FORWARD), get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_RIGHT));
     update_direction(MAZE.direction, REL_LEFT);
     go_left();
   }
-  else if (SS_FL <= WALL_TV && get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_FORWARD) < get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_RIGHT)) {
+  else if (SS_FL <= WALL_TV && get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_FORWARD) <= get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_RIGHT)) {
     // 前に壁がなく、前の通過回数が右より少ないなら前に進む
     SERIAL_OUT.printf("if 6: get_passed: %d %d\n", get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_FORWARD), get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_RIGHT));
     update_direction(MAZE.direction, REL_FORWARD);
