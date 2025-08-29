@@ -1,3 +1,7 @@
+/*
+  迷路探索アルゴリズム共通の関数群
+*/
+
 // ----------------------------------------------------------------------
 void init_maze() {
   // MAZEの初期化
@@ -15,91 +19,6 @@ void init_maze() {
 
   // 迷路の状態を表示
   print_maze();
-}
-
-// ----------------------------------------------------------------------
-int decide_direction_lefthand(uint8_t goal_x, uint8_t goal_y) {
-  // 現在の方向を決定（左手法）
-  if (SS_L <= WALL_TV ) {
-    switch (MAZE.direction) {
-      case DIR_NORTH:
-        MAZE.direction = DIR_WEST; // 北から西に進む
-        break;
-      case DIR_EAST:
-        MAZE.direction = DIR_NORTH; // 東から北に進む
-        break;
-      case DIR_SOUTH:
-        MAZE.direction = DIR_EAST; // 南から東に進む
-        break;
-      case DIR_WEST:
-        MAZE.direction = DIR_SOUTH; // 西から南に進む
-        break;
-    }
-    go_left();
-  }
-  else if (SS_FL <= WALL_TV) {
-    switch (MAZE.direction) {
-      case DIR_NORTH:
-        MAZE.direction = DIR_NORTH;
-        break;
-      case DIR_EAST:
-        MAZE.direction = DIR_EAST;
-        break;
-      case DIR_SOUTH:
-        MAZE.direction = DIR_SOUTH;
-        break;
-      case DIR_WEST:
-        MAZE.direction = DIR_WEST;
-        break;
-    }
-    go_forward();
-  }
-  else if (SS_R <= WALL_TV) {
-    switch (MAZE.direction) {
-      case DIR_NORTH:
-        MAZE.direction = DIR_EAST; // 北から東に進む
-        break;
-      case DIR_EAST:
-        MAZE.direction = DIR_SOUTH; // 東から南に進む
-        break;
-      case DIR_SOUTH:
-        MAZE.direction = DIR_WEST; // 南から西に進む
-        break;
-      case DIR_WEST:
-        MAZE.direction = DIR_NORTH; // 西から北に進む
-        break;
-    }
-    go_right();
-  }
-  else {
-    switch (MAZE.direction) {
-      case DIR_NORTH:
-        MAZE.direction = DIR_SOUTH;
-        break;
-      case DIR_EAST:
-        MAZE.direction = DIR_WEST;
-        break;
-      case DIR_SOUTH:
-        MAZE.direction = DIR_NORTH;
-        break;
-      case DIR_WEST:
-        MAZE.direction = DIR_EAST;
-        break;
-    }
-    go_uturn();
-  }
-  update_pos_and_walls(); // 現在位置と壁の状態を更新
-  // デバッグ用
-  print_maze();
-
-  // ゴール判定
-  if (MAZE.x == goal_x && MAZE.y == goal_y) {
-    SERIAL_OUT.println("Goal Reached!");
-    return 0;
-  }
-  else {
-    return -1;
-  }
 }
 
 // ----------------------------------------------------------------------
