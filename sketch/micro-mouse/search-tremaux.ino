@@ -10,77 +10,25 @@ int decide_direction_tremaux(uint8_t goal_x, uint8_t goal_y) {
   if (SS_L <= WALL_TV && get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_LEFT) == 0) {
     // 左に壁がなく、一度も通ってないなら左に曲がる
     SERIAL_OUT.printf("if 1: get_passed: %d\n", get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_LEFT));
-    switch (MAZE.direction) {
-      case DIR_NORTH:
-        MAZE.direction = DIR_WEST; // 北から西に進む
-        break;
-      case DIR_EAST:
-        MAZE.direction = DIR_NORTH; // 東から北に進む
-        break;
-      case DIR_SOUTH:
-        MAZE.direction = DIR_EAST; // 南から東に進む
-        break;
-      case DIR_WEST:
-        MAZE.direction = DIR_SOUTH; // 西から南に進む
-        break;
-    }
+    update_direction(MAZE.direction, REL_LEFT);
     go_left();
   }
   else if (SS_FL <= WALL_TV && get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_FORWARD) == 0) {
     // 前方に壁がなく、一度も通ってないなら前に進む
     SERIAL_OUT.printf("if 2: get_passed: %d\n", get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_FORWARD));
-    switch (MAZE.direction) {
-      case DIR_NORTH:
-        MAZE.direction = DIR_NORTH;
-        break;
-      case DIR_EAST:
-        MAZE.direction = DIR_EAST;
-        break;
-      case DIR_SOUTH:
-        MAZE.direction = DIR_SOUTH;
-        break;
-      case DIR_WEST:
-        MAZE.direction = DIR_WEST;
-        break;
-    }
+    update_direction(MAZE.direction, REL_FORWARD);
     go_forward();
   }
   else if (SS_R <= WALL_TV && get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_RIGHT) == 0) {
     // 右に壁がなく、一度も通ってないなら右に曲がる
     SERIAL_OUT.printf("if 3: get_passed: %d\n", get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_RIGHT));
-    switch (MAZE.direction) {
-      case DIR_NORTH:
-        MAZE.direction = DIR_EAST; // 北から東に進む
-        break;
-      case DIR_EAST:
-        MAZE.direction = DIR_SOUTH; // 東から南に進む
-        break;
-      case DIR_SOUTH:
-        MAZE.direction = DIR_WEST; // 南から西に進む
-        break;
-      case DIR_WEST:
-        MAZE.direction = DIR_NORTH; // 西から北に進む
-        break;
-    }
+    update_direction(MAZE.direction, REL_RIGHT);
     go_right();
   }
-  else if (SS_L > WALL_TV && SS_R > WALL_TV && SS_FL > WALL_TV && get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_BACK) == 1) {
+  else if (SS_L > WALL_TV && SS_R > WALL_TV && SS_FL > WALL_TV) { //&& get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_BACK) == 1) {
     // 三方壁で、後ろが一度だけ通ったならUターン
     SERIAL_OUT.printf("if 4: get_passed: %d\n", get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_BACK));
-    switch (MAZE.direction) {
-      case DIR_NORTH:
-        MAZE.direction = DIR_SOUTH;
-        break;
-      case DIR_EAST:
-        MAZE.direction = DIR_WEST;
-        break;
-      case DIR_SOUTH:
-        MAZE.direction = DIR_NORTH;
-        break;
-      case DIR_WEST:
-        MAZE.direction = DIR_EAST;
-        break;
-    }
+    update_direction(MAZE.direction, REL_BACK);
     go_uturn();
   }
   else if (SS_L <= WALL_TV && 
@@ -88,77 +36,25 @@ int decide_direction_tremaux(uint8_t goal_x, uint8_t goal_y) {
             get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_LEFT) < get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_RIGHT)) {
     // 左に壁がなく、左の通過回数が前・右より少ないなら左に曲がる
     SERIAL_OUT.printf("if 5: get_passed: %d %d %d\n", get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_LEFT), get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_FORWARD), get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_RIGHT));
-    switch (MAZE.direction) {
-      case DIR_NORTH:
-        MAZE.direction = DIR_WEST; // 北から西に進む
-        break;
-      case DIR_EAST:
-        MAZE.direction = DIR_NORTH; // 東から北に進む
-        break;
-      case DIR_SOUTH:
-        MAZE.direction = DIR_EAST; // 南から東に進む
-        break;
-      case DIR_WEST:
-        MAZE.direction = DIR_SOUTH; // 西から南に進む
-        break;
-    }
+    update_direction(MAZE.direction, REL_LEFT);
     go_left();
   }
   else if (SS_FL <= WALL_TV && get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_FORWARD) < get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_RIGHT)) {
     // 前に壁がなく、前の通過回数が右より少ないなら前に進む
     SERIAL_OUT.printf("if 6: get_passed: %d %d\n", get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_FORWARD), get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_RIGHT));
-    switch (MAZE.direction) {
-      case DIR_NORTH:
-        MAZE.direction = DIR_NORTH;
-        break;
-      case DIR_EAST:
-        MAZE.direction = DIR_EAST;
-        break;
-      case DIR_SOUTH:
-        MAZE.direction = DIR_SOUTH;
-        break;
-      case DIR_WEST:
-        MAZE.direction = DIR_WEST;
-        break;
-    }
+    update_direction(MAZE.direction, REL_FORWARD);
     go_forward();
   }
   else if (SS_R <= WALL_TV) {
     // 右に壁がないなら右に曲がる
     SERIAL_OUT.printf("if 7: \n");
-    switch (MAZE.direction) {
-      case DIR_NORTH:
-        MAZE.direction = DIR_EAST; // 北から東に進む
-        break;
-      case DIR_EAST:
-        MAZE.direction = DIR_SOUTH; // 東から南に進む
-        break;
-      case DIR_SOUTH:
-        MAZE.direction = DIR_WEST; // 南から西に進む
-        break;
-      case DIR_WEST:
-        MAZE.direction = DIR_NORTH; // 西から北に進む
-        break;
-    }
+    update_direction(MAZE.direction, REL_RIGHT);
     go_right();
   }
   else {
     // それ以外はUターン
     SERIAL_OUT.printf("if 8: \n");
-    switch (MAZE.direction) {
-      case DIR_NORTH:
-        MAZE.direction = DIR_SOUTH;
-        break;
-      case DIR_EAST:
-        MAZE.direction = DIR_WEST;
-        break;
-      case DIR_SOUTH:
-        MAZE.direction = DIR_NORTH;
-        break;
-      case DIR_WEST:
-        MAZE.direction = DIR_EAST;
-        break;
-    }
+    update_direction(MAZE.direction, REL_BACK);
     go_uturn();
   }
   // 現在位置と壁の状態を更新

@@ -150,6 +150,77 @@ void update_pos_and_walls() {
 }
 
 // ----------------------------------------------------------------------
+// 車体の方角と次の進行方向から次の方角を更新する関数
+void update_direction(int direction, int rel_dir) {
+  switch (direction) {
+    case DIR_NORTH:
+      switch (rel_dir) {
+        case REL_FORWARD:
+          MAZE.direction = DIR_NORTH;
+          break;
+        case REL_LEFT:
+          MAZE.direction = DIR_WEST;
+          break;
+        case REL_RIGHT:
+          MAZE.direction = DIR_EAST;
+          break;
+        case REL_BACK:
+          MAZE.direction = DIR_SOUTH;
+          break;
+      }
+      break;
+    case DIR_EAST:
+      switch (rel_dir) {
+        case REL_FORWARD:
+          MAZE.direction = DIR_EAST;
+          break;
+        case REL_LEFT:
+          MAZE.direction = DIR_NORTH;
+          break;
+        case REL_RIGHT:
+          MAZE.direction = DIR_SOUTH;
+          break;
+        case REL_BACK:
+          MAZE.direction = DIR_WEST;
+          break;
+      }
+      break;
+    case DIR_SOUTH:
+      switch (rel_dir) {
+        case REL_FORWARD:
+          MAZE.direction = DIR_SOUTH;
+          break;
+        case REL_LEFT:
+          MAZE.direction = DIR_EAST;
+          break;
+        case REL_RIGHT:
+          MAZE.direction = DIR_WEST;
+          break;
+        case REL_BACK:
+          MAZE.direction = DIR_NORTH;
+          break;
+      }
+      break;
+    case DIR_WEST:
+      switch (rel_dir) {
+        case REL_FORWARD:
+          MAZE.direction = DIR_WEST;
+          break;
+        case REL_LEFT:
+          MAZE.direction = DIR_SOUTH;
+          break;
+        case REL_RIGHT:
+          MAZE.direction = DIR_NORTH;
+          break;
+        case REL_BACK:
+          MAZE.direction = DIR_EAST;
+          break;
+      }
+      break;
+  }
+}
+
+// ----------------------------------------------------------------------
 // nビット左ローテーションする関数
 uint8_t rotate_left(uint8_t x, uint8_t n) {
     return (x << n) | (x >> (8 - n));
