@@ -31,7 +31,7 @@ void test_run_shortest_path() {
 void test_make_steps_map() {
   if (digitalRead(SW2) == LOW) {
     delay(1000);
-    make_steps_map(MAZE_GOAL_X, MAZE_GOAL_Y);
+    make_steps_map(0, 0, MAZE_GOAL_X, MAZE_GOAL_Y);
     resolve_shortest_path(0, 0, DIR_NORTH);
   }
 }

@@ -7,7 +7,7 @@ void run_shortest_path() {
   int i = 0;
 
   // 歩数図を作成
-  make_steps_map(MAZE_GOAL_X, MAZE_GOAL_Y);
+  make_steps_map(0, 0, MAZE_GOAL_X, MAZE_GOAL_Y);
   // 最短経路を求める
   resolve_shortest_path(0, 0, DIR_NORTH);
   // 最短経路を実行
@@ -162,7 +162,7 @@ void print_shortest_path() {
 }
 
 // ----------------------------------------------------------------------
-void make_steps_map(int goal_x, int goal_y) {
+void make_steps_map(int start_x, int start_y, int goal_x, int goal_y) {
   // テストデータをコピー
   //MAZE = TMAZE;
   print_maze();
@@ -176,7 +176,7 @@ void make_steps_map(int goal_x, int goal_y) {
   STEPS_MAP[goal_x][goal_y] = 0; // ゴール位置は0
 
   int current_value = 0;
-  while (update_steps_map(current_value) != 0) {
+  while (update_steps_map(start_x, start_y, current_value) != 0) {
     current_value++;
     SERIAL_OUT.printf("Current value: %d", current_value);
     SERIAL_OUT.println();
@@ -186,7 +186,7 @@ void make_steps_map(int goal_x, int goal_y) {
 }
 
 // ----------------------------------------------------------------------
-int update_steps_map(uint8_t value) {
+int update_steps_map(int start_x, int start_y, uint8_t value) {
   for (int y = 0; y < MAZE_SIZE; y++) {
     for (int x = 0; x < MAZE_SIZE; x++) {
       if (STEPS_MAP[x][y] == value) {
@@ -197,7 +197,7 @@ int update_steps_map(uint8_t value) {
           if (y + 1 < MAZE_SIZE) { // 配列の範囲外チェック
             if (MAZE.passed[x][y + 1] != 0 && STEPS_MAP[x][y + 1] == 255) { // 通過済みセル and 等高線が更新されてない場合
               STEPS_MAP[x][y + 1] = value + 1;
-              if (x == 0 && (y + 1) == 0) return 0; // スタート地点に到達したら終了
+              if (x == start_x && (y + 1) == start_y) return 0; // スタート地点に到達したら終了
             }
           }
         }
@@ -205,7 +205,7 @@ int update_steps_map(uint8_t value) {
           if (x - 1 >= 0) { // 配列の範囲外チェック
             if (MAZE.passed[x - 1][y] != 0 && STEPS_MAP[x - 1][y] == 255) { // 通過済みセル and 等高線が更新されてない場合
               STEPS_MAP[x - 1][y] = value + 1;
-              if ((x - 1) == 0 && y == 0) return 0; // スタート地点に到達したら終了
+              if ((x - 1) == start_x && y == start_y) return 0; // スタート地点に到達したら終了
             }
           } 
         }
@@ -213,7 +213,7 @@ int update_steps_map(uint8_t value) {
           if (y - 1 >= 0) { // 配列の範囲外チェック
             if (MAZE.passed[x][y - 1] != 0 && STEPS_MAP[x][y - 1] == 255) { // 通過済みセル and 等高線が更新されてない場合
               STEPS_MAP[x][y - 1] = value + 1;
-              if (x == 0 && (y - 1) == 0) return 0; // スタート地点に到達したら終了
+              if (x == start_x && (y - 1) == start_y) return 0; // スタート地点に到達したら終了
             }
           }
         }
@@ -221,7 +221,7 @@ int update_steps_map(uint8_t value) {
           if (x + 1 < MAZE_SIZE) { // 配列の範囲外チェック
             if (MAZE.passed[x + 1][y] != 0 && STEPS_MAP[x + 1][y] == 255) { // 通過済みセル and 等高線が更新されてない場合
               STEPS_MAP[x + 1][y] = value + 1;
-              if ((x + 1) == 0 && y == 0) return 0; // スタート地点に到達したら終了
+              if ((x + 1) == start_x && y == start_y) return 0; // スタート地点に到達したら終了
             }
           }
         }
