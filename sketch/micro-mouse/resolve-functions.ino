@@ -15,18 +15,23 @@ void run_shortest_path(int start_x, int start_y, int goal_x, int goal_y, Directi
     // 最短経路に従って移動
     switch (SHORTEST_PATH[i]) {
       case GOTO_FORWARD:
+        update_direction(MAZE.direction, REL_FORWARD);
         go_forward();
         break;
       case GOTO_LEFT:
+        update_direction(MAZE.direction, REL_LEFT);
         go_left();
         break;
       case GOTO_RIGHT:
+        update_direction(MAZE.direction, REL_RIGHT);
         go_right();
         break;
       case GOTO_BACK:
+        update_direction(MAZE.direction, REL_BACK);
         go_uturn();
         break;
     }
+    update_pos_and_walls();
     i++;
     delay(250);
   }
