@@ -53,93 +53,81 @@ void resolve_shortest_path(int start_x, int start_y, Direction start_dir) {
   SERIAL_OUT.println("Resolving shortest path...");
   do {
     //SERIAL_OUT.printf("  Searching value: %d from (%d, %d)\n", path_value - 1, x, y);
-    if (y + 1 < MAZE_SIZE) { // 境界チェック
-      if (STEPS_MAP[x][y + 1] == path_value - 1) { // 北
-        next_x = x;
-        next_y = y + 1;
-        switch (direction) {
-          case DIR_NORTH: // 北向きから北に進む
-            SHORTEST_PATH[path_length] = GOTO_FORWARD;
-            break;
-          case DIR_EAST: // 東向きから北に進む
-            SHORTEST_PATH[path_length] = GOTO_LEFT;
-            break;
-          case DIR_SOUTH: // 南向きから北に進む(未使用)
-            SHORTEST_PATH[path_length] = GOTO_BACK; // 後退(未使用)
-            break;
-          case DIR_WEST: // 西向きから北に進む
-            SHORTEST_PATH[path_length] = GOTO_RIGHT;
-            break;
-        }
-        direction = DIR_NORTH;
-        //SERIAL_OUT.printf("    Found on NORTH (%d, %d)\n", next_x, next_y);
+    if (y + 1 < MAZE_SIZE && STEPS_MAP[x][y + 1] == path_value - 1) { // 北
+      next_x = x;
+      next_y = y + 1;
+      switch (direction) {
+        case DIR_NORTH: // 北向きから北に進む
+          SHORTEST_PATH[path_length] = GOTO_FORWARD;
+          break;
+        case DIR_EAST: // 東向きから北に進む
+          SHORTEST_PATH[path_length] = GOTO_LEFT;
+          break;
+        case DIR_SOUTH: // 南向きから北に進む(未使用)
+          SHORTEST_PATH[path_length] = GOTO_BACK; // 後退(未使用)
+          break;
+        case DIR_WEST: // 西向きから北に進む
+          SHORTEST_PATH[path_length] = GOTO_RIGHT;
+          break;
       }
+      direction = DIR_NORTH;
     }
-    if (x - 1 >= 0) { // 境界チェック
-      if (STEPS_MAP[x - 1][y] == path_value - 1) { // 西
-        next_x = x - 1;
-        next_y = y;
-        switch (direction) {
-          case DIR_NORTH: // 北向きから西に進む
-            SHORTEST_PATH[path_length] = GOTO_LEFT;
-            break;
-          case DIR_EAST: // 東向きから西に進む
-            SHORTEST_PATH[path_length] = GOTO_BACK; // 後退(未使用)
-            break;
-          case DIR_SOUTH: // 南向きから西に進む
-            SHORTEST_PATH[path_length] = GOTO_RIGHT;
-            break;
-          case DIR_WEST: // 西向きから西に進む
-            SHORTEST_PATH[path_length] = GOTO_FORWARD;
-            break;
-        }
-        direction = DIR_WEST;
-        //SERIAL_OUT.printf("    Found on WEST (%d, %d)\n", next_x, next_y);
+    if (x - 1 >= 0 && STEPS_MAP[x - 1][y] == path_value - 1) { // 西
+      next_x = x - 1;
+      next_y = y;
+      switch (direction) {
+        case DIR_NORTH: // 北向きから西に進む
+          SHORTEST_PATH[path_length] = GOTO_LEFT;
+          break;
+        case DIR_EAST: // 東向きから西に進む
+          SHORTEST_PATH[path_length] = GOTO_BACK; // 後退(未使用)
+          break;
+        case DIR_SOUTH: // 南向きから西に進む
+          SHORTEST_PATH[path_length] = GOTO_RIGHT;
+          break;
+        case DIR_WEST: // 西向きから西に進む
+          SHORTEST_PATH[path_length] = GOTO_FORWARD;
+          break;
       }
+      direction = DIR_WEST;
     }
-    if (y - 1 >= 0) { // 境界チェック
-      if (STEPS_MAP[x][y - 1] == path_value - 1) { // 南
-        next_x = x;
-        next_y = y - 1;
-        switch (direction) {
-          case DIR_NORTH: // 北向きから南に進む
-            SHORTEST_PATH[path_length] = GOTO_BACK; // 後退(未使用)
-            break;
-          case DIR_EAST: // 東向きから南に進む
-            SHORTEST_PATH[path_length] = GOTO_RIGHT;
-            break;
-          case DIR_SOUTH: // 南向きから南に進む
-            SHORTEST_PATH[path_length] = GOTO_FORWARD;
-            break;
-          case DIR_WEST: // 西向きから南に進む
-            SHORTEST_PATH[path_length] = GOTO_LEFT;
-            break;
-        }
-        direction = DIR_SOUTH;
-        //SERIAL_OUT.printf("    Found on SOUTH (%d, %d)\n", next_x, next_y);
+    if (y - 1 >= 0 && STEPS_MAP[x][y - 1] == path_value - 1) { // 南
+      next_x = x;
+      next_y = y - 1;
+      switch (direction) {
+        case DIR_NORTH: // 北向きから南に進む
+          SHORTEST_PATH[path_length] = GOTO_BACK; // 後退(未使用)
+          break;
+        case DIR_EAST: // 東向きから南に進む
+          SHORTEST_PATH[path_length] = GOTO_RIGHT;
+          break;
+        case DIR_SOUTH: // 南向きから南に進む
+          SHORTEST_PATH[path_length] = GOTO_FORWARD;
+          break;
+        case DIR_WEST: // 西向きから南に進む
+          SHORTEST_PATH[path_length] = GOTO_LEFT;
+          break;
       }
+      direction = DIR_SOUTH;
     }
-    if (x + 1 < MAZE_SIZE) { // 境界チェック
-      if (STEPS_MAP[x + 1][y] == path_value - 1) { // 東
-        next_x = x + 1;
-        next_y = y;
-        switch (direction) {
-          case DIR_NORTH: // 北向きから東に進む
-            SHORTEST_PATH[path_length] = GOTO_RIGHT;
-            break;
-          case DIR_EAST: // 東向きから東に進む
-            SHORTEST_PATH[path_length] = GOTO_FORWARD;
-            break;
-          case DIR_SOUTH: // 南向きから東に進む
-            SHORTEST_PATH[path_length] = GOTO_LEFT;
-            break;
-          case DIR_WEST: // 西向きから東に進む
-            SHORTEST_PATH[path_length] = GOTO_BACK; // 後退(未使用)
-            break;
-        }
-        direction = DIR_EAST;
-        //SERIAL_OUT.printf("    Found on EAST (%d, %d)\n", next_x, next_y);
+    if (x + 1 < MAZE_SIZE && STEPS_MAP[x + 1][y] == path_value - 1) { // 東
+      next_x = x + 1;
+      next_y = y;
+      switch (direction) {
+        case DIR_NORTH: // 北向きから東に進む
+          SHORTEST_PATH[path_length] = GOTO_RIGHT;
+          break;
+        case DIR_EAST: // 東向きから東に進む
+          SHORTEST_PATH[path_length] = GOTO_FORWARD;
+          break;
+        case DIR_SOUTH: // 南向きから東に進む
+          SHORTEST_PATH[path_length] = GOTO_LEFT;
+          break;
+        case DIR_WEST: // 西向きから東に進む
+          SHORTEST_PATH[path_length] = GOTO_BACK; // 後退(未使用)
+          break;
       }
+      direction = DIR_EAST;
     }
     path_length++;
     path_value--;
