@@ -2,32 +2,32 @@
 // トレモー法による方向決定関数
 int decide_direction_tremaux(uint8_t goal_x, uint8_t goal_y) {
   // デバッグ用
-  SERIAL_OUT.printf("L wall: %d   passed: %d\n", SS_L <= WALL_TV ? 0 : 1, get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_LEFT));
-  SERIAL_OUT.printf("F wall: %d   passed: %d\n", SS_FL <= WALL_TV ? 0 : 1, get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_FORWARD));
-  SERIAL_OUT.printf("R wall: %d   passed: %d\n", SS_R <= WALL_TV ? 0 : 1, get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_RIGHT));
-  SERIAL_OUT.println();
+  //SERIAL_OUT.printf("L wall: %d   passed: %d\n", SS_L <= WALL_TV ? 0 : 1, get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_LEFT));
+  //SERIAL_OUT.printf("F wall: %d   passed: %d\n", SS_FL <= WALL_TV ? 0 : 1, get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_FORWARD));
+  //SERIAL_OUT.printf("R wall: %d   passed: %d\n", SS_R <= WALL_TV ? 0 : 1, get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_RIGHT));
+  //SERIAL_OUT.println();
 
   if (SS_L <= WALL_TV && get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_LEFT) == 0) {
     // 左に壁がなく、一度も通ってないなら左に曲がる
-    SERIAL_OUT.printf("if 1: get_passed: %d\n", get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_LEFT));
+    //SERIAL_OUT.printf("if 1: get_passed: %d\n", get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_LEFT));
     update_direction(MAZE.direction, REL_LEFT);
     go_left();
   }
   else if (SS_FL <= WALL_TV && get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_FORWARD) == 0) {
     // 前方に壁がなく、一度も通ってないなら前に進む
-    SERIAL_OUT.printf("if 2: get_passed: %d\n", get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_FORWARD));
+    //SERIAL_OUT.printf("if 2: get_passed: %d\n", get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_FORWARD));
     update_direction(MAZE.direction, REL_FORWARD);
     go_forward();
   }
   else if (SS_R <= WALL_TV && get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_RIGHT) == 0) {
     // 右に壁がなく、一度も通ってないなら右に曲がる
-    SERIAL_OUT.printf("if 3: get_passed: %d\n", get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_RIGHT));
+    //SERIAL_OUT.printf("if 3: get_passed: %d\n", get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_RIGHT));
     update_direction(MAZE.direction, REL_RIGHT);
     go_right();
   }
   else if (SS_L > WALL_TV && SS_R > WALL_TV && SS_FL > WALL_TV) {
     // 三方壁で、後ろが一度だけ通ったならUターン
-    SERIAL_OUT.printf("if 4: get_passed: %d\n", get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_BACK));
+    //SERIAL_OUT.printf("if 4: get_passed: %d\n", get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_BACK));
     update_direction(MAZE.direction, REL_BACK);
     go_uturn();
   }
@@ -35,25 +35,25 @@ int decide_direction_tremaux(uint8_t goal_x, uint8_t goal_y) {
             get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_LEFT) <= get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_FORWARD) &&
             get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_LEFT) <= get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_RIGHT)) {
     // 左に壁がなく、左の通過回数が前・右より少ないなら左に曲がる
-    SERIAL_OUT.printf("if 5: get_passed: %d %d %d\n", get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_LEFT), get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_FORWARD), get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_RIGHT));
+    //SERIAL_OUT.printf("if 5: get_passed: %d %d %d\n", get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_LEFT), get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_FORWARD), get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_RIGHT));
     update_direction(MAZE.direction, REL_LEFT);
     go_left();
   }
   else if (SS_FL <= WALL_TV && get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_FORWARD) <= get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_RIGHT)) {
     // 前に壁がなく、前の通過回数が右より少ないなら前に進む
-    SERIAL_OUT.printf("if 6: get_passed: %d %d\n", get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_FORWARD), get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_RIGHT));
+    //SERIAL_OUT.printf("if 6: get_passed: %d %d\n", get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_FORWARD), get_passed(MAZE.x, MAZE.y, MAZE.direction, REL_RIGHT));
     update_direction(MAZE.direction, REL_FORWARD);
     go_forward();
   }
   else if (SS_R <= WALL_TV) {
     // 右に壁がないなら右に曲がる
-    SERIAL_OUT.printf("if 7: \n");
+    //SERIAL_OUT.printf("if 7: \n");
     update_direction(MAZE.direction, REL_RIGHT);
     go_right();
   }
   else {
     // それ以外はUターン
-    SERIAL_OUT.printf("if 8: \n");
+    //SERIAL_OUT.printf("if 8: \n");
     update_direction(MAZE.direction, REL_BACK);
     go_uturn();
   }
