@@ -3,13 +3,13 @@
 */
 
 // ----------------------------------------------------------------------
-void run_shortest_path() {
+void run_shortest_path(int start_x, int start_y, int goal_x, int goal_y, Direction start_dir) {
   int i = 0;
 
   // 歩数図を作成
-  make_steps_map(0, 0, MAZE_GOAL_X, MAZE_GOAL_Y);
+  make_steps_map(start_x, start_y, goal_x, goal_y);
   // 最短経路を求める
-  resolve_shortest_path(0, 0, DIR_NORTH);
+  resolve_shortest_path(start_x, start_y, start_dir);
   // 最短経路を実行
   while (SHORTEST_PATH[i] != -1) {
     // 最短経路に従って移動
@@ -37,8 +37,8 @@ void run_shortest_path() {
 // 
 void resolve_shortest_path(int start_x, int start_y, Direction start_dir) {
   // 歩数図から最短経路を求める
-  int x = 0;
-  int y = 0;
+  int x = start_x;
+  int y = start_y;
   int next_x = 0;
   int next_y = 0;
   int path_length = 0;

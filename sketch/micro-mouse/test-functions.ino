@@ -21,7 +21,7 @@ void test_decide_direction() {
 void test_run_shortest_path() {
   if (digitalRead(SW2) == LOW) {
     delay(1000);
-    run_shortest_path();
+    run_shortest_path(0, 0, MAZE_GOAL_X, MAZE_GOAL_Y, DIR_NORTH);
     flash_alternate(20); // 最短経路実行時にLEDを点滅
     delay(2000);
   }
