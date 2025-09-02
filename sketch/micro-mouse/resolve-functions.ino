@@ -58,7 +58,7 @@ void resolve_shortest_path(int start_x, int start_y, Direction start_dir) {
   SERIAL_OUT.println("Resolving shortest path...");
   do {
     //SERIAL_OUT.printf("  Searching value: %d from (%d, %d)\n", path_value - 1, x, y);
-    if (y + 1 < MAZE_SIZE && STEPS_MAP[x][y + 1] == path_value - 1) { // 北
+    if (y + 1 < MAZE_SIZE && (MAZE.walls[x][y] & 0b00010001) == 0 && STEPS_MAP[x][y + 1] == path_value - 1) { // 北
       next_x = x;
       next_y = y + 1;
       switch (direction) {
@@ -77,7 +77,7 @@ void resolve_shortest_path(int start_x, int start_y, Direction start_dir) {
       }
       direction = DIR_NORTH;
     }
-    if (x - 1 >= 0 && STEPS_MAP[x - 1][y] == path_value - 1) { // 西
+    if (x - 1 >= 0 && (MAZE.walls[x][y] & 0b00100010) == 0 && STEPS_MAP[x - 1][y] == path_value - 1) { // 西
       next_x = x - 1;
       next_y = y;
       switch (direction) {
@@ -96,7 +96,7 @@ void resolve_shortest_path(int start_x, int start_y, Direction start_dir) {
       }
       direction = DIR_WEST;
     }
-    if (y - 1 >= 0 && STEPS_MAP[x][y - 1] == path_value - 1) { // 南
+    if (y - 1 >= 0 && (MAZE.walls[x][y] & 0b01000100) == 0 && STEPS_MAP[x][y - 1] == path_value - 1) { // 南
       next_x = x;
       next_y = y - 1;
       switch (direction) {
@@ -115,7 +115,7 @@ void resolve_shortest_path(int start_x, int start_y, Direction start_dir) {
       }
       direction = DIR_SOUTH;
     }
-    if (x + 1 < MAZE_SIZE && STEPS_MAP[x + 1][y] == path_value - 1) { // 東
+    if (x + 1 < MAZE_SIZE && (MAZE.walls[x][y] & 0b10001000) == 0 && STEPS_MAP[x + 1][y] == path_value - 1) { // 東
       next_x = x + 1;
       next_y = y;
       switch (direction) {
