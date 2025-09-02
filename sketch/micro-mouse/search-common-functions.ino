@@ -66,6 +66,13 @@ void update_pos_and_walls() {
       MAZE.walls[MAZE.x][MAZE.y] = rotate_left(walls, DIR_WEST);
       break;
   }
+  // LCDに現在座標を表示
+  lcd.setCursor(0, 0);
+  lcd.print(MAZE.x);
+  lcd.print(" ");
+  lcd.setCursor(3, 0);
+  lcd.print(MAZE.y);
+  lcd.print(" ");
 }
 
 // ----------------------------------------------------------------------
@@ -162,12 +169,6 @@ uint8_t rotate_left(uint8_t x, uint8_t n) {
 
 // ----------------------------------------------------------------------
 void print_maze() {
-  lcd.setCursor(0, 0);
-  lcd.print(MAZE.x);
-  lcd.print(" ");
-  lcd.setCursor(3, 0);
-  lcd.print(MAZE.y);
-  lcd.print(" ");
   // 通過済みセルの状態を表示
   SERIAL_OUT.println("Passed Cells:");
   for (int y = MAZE_SIZE - 1; y >= 0; y--) {
