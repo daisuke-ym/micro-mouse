@@ -140,6 +140,21 @@ void update_direction(int direction, int rel_dir) {
 }
 
 // ----------------------------------------------------------------------
+// 迷路の未探索区画数を返す関数 
+int count_unsearched_cells() {
+  int i = 0;
+
+  for (int x = 0; x < MAZE_SIZE; x++) {
+    for (int y = 0; y < MAZE_SIZE; y++) {
+      if (MAZE.passed[x][y] == 0) {
+        i++;
+      }
+    }
+  }
+  return i;
+}
+
+// ----------------------------------------------------------------------
 // nビット左ローテーションする関数
 uint8_t rotate_left(uint8_t x, uint8_t n) {
     return (x << n) | (x >> (8 - n));

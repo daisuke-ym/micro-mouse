@@ -116,6 +116,13 @@ void test_decide_direction_tremaux() {
     delay(2000);
     // スタート地点を目指す
     while (decide_direction_tremaux(0, 0) != 0) {
+      if (count_unsearched_cells() == 0) {
+        // 全探索済みなら最短経路で戻る
+        SERIAL_OUT.println("Search complete!");
+        flash_led(1, 5);
+        run_shortest_path(MAZE.x, MAZE.y, 0, 0, MAZE.direction);
+        break;
+      }
       delay(250);
     }
     flash_alternate(20); // 目標到達時にLEDを点滅
