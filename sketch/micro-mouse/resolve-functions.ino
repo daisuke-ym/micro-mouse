@@ -186,37 +186,25 @@ int update_steps_map(int start_x, int start_y, uint8_t value) {
         //SERIAL_OUT.printf("Updating contour map at (%d, %d) with value %d", x, y, value);
         //SERIAL_OUT.println();
         // 周囲の壁を調査
-        if ((MAZE.walls[x][y] & 0b00010001) == 0) { // 北の壁
-          if (y + 1 < MAZE_SIZE) { // 配列の範囲外チェック
-            if (MAZE.passed[x][y + 1] != 0 && STEPS_MAP[x][y + 1] == 255) { // 通過済みセル and 等高線が更新されてない場合
-              STEPS_MAP[x][y + 1] = value + 1;
-              if (x == start_x && (y + 1) == start_y) return 0; // スタート地点に到達したら終了
-            }
-          }
+        // 北の壁 and 配列の範囲外チェック and 通過済みセル and 等高線が更新されてない場合
+        if ((MAZE.walls[x][y] & 0b00010001) == 0 && y + 1 < MAZE_SIZE && MAZE.passed[x][y + 1] != 0 && STEPS_MAP[x][y + 1] == 255) {
+          STEPS_MAP[x][y + 1] = value + 1;
+          if (x == start_x && (y + 1) == start_y) return 0; // スタート地点に到達したら終了
         }
-        if ((MAZE.walls[x][y] & 0b00100010) == 0) { // 西の壁
-          if (x - 1 >= 0) { // 配列の範囲外チェック
-            if (MAZE.passed[x - 1][y] != 0 && STEPS_MAP[x - 1][y] == 255) { // 通過済みセル and 等高線が更新されてない場合
-              STEPS_MAP[x - 1][y] = value + 1;
-              if ((x - 1) == start_x && y == start_y) return 0; // スタート地点に到達したら終了
-            }
-          } 
+        // 西の壁 and 配列の範囲外チェック and 通過済みセル and 等高線が更新されてない場合
+        if ((MAZE.walls[x][y] & 0b00100010) == 0 && x - 1 >= 0 && MAZE.passed[x - 1][y] != 0 && STEPS_MAP[x - 1][y] == 255) {
+          STEPS_MAP[x - 1][y] = value + 1;
+          if ((x - 1) == start_x && y == start_y) return 0; // スタート地点に到達したら終了
         }
-        if ((MAZE.walls[x][y] & 0b01000100) == 0) { // 南の壁
-          if (y - 1 >= 0) { // 配列の範囲外チェック
-            if (MAZE.passed[x][y - 1] != 0 && STEPS_MAP[x][y - 1] == 255) { // 通過済みセル and 等高線が更新されてない場合
-              STEPS_MAP[x][y - 1] = value + 1;
-              if (x == start_x && (y - 1) == start_y) return 0; // スタート地点に到達したら終了
-            }
-          }
+        // 南の壁 and 配列の範囲外チェック and 通過済みセル and 等高線が更新されてない場合
+        if ((MAZE.walls[x][y] & 0b01000100) == 0 && y - 1 >= 0 && MAZE.passed[x][y - 1] != 0 && STEPS_MAP[x][y - 1] == 255) {
+          STEPS_MAP[x][y - 1] = value + 1;
+          if (x == start_x && (y - 1) == start_y) return 0; // スタート地点に到達したら終了
         }
-        if ((MAZE.walls[x][y] & 0b10001000) == 0) { // 東の壁
-          if (x + 1 < MAZE_SIZE) { // 配列の範囲外チェック
-            if (MAZE.passed[x + 1][y] != 0 && STEPS_MAP[x + 1][y] == 255) { // 通過済みセル and 等高線が更新されてない場合
-              STEPS_MAP[x + 1][y] = value + 1;
-              if ((x + 1) == start_x && y == start_y) return 0; // スタート地点に到達したら終了
-            }
-          }
+        // 東の壁 and 配列の範囲外チェック and 通過済みセル and 等高線が更新されてない場合
+        if ((MAZE.walls[x][y] & 0b10001000) == 0 && x + 1 < MAZE_SIZE && MAZE.passed[x + 1][y] != 0 && STEPS_MAP[x + 1][y] == 255) {
+            STEPS_MAP[x + 1][y] = value + 1;
+          if ((x + 1) == start_x && y == start_y) return 0; // スタート地点に到達したら終了
         }
       }
     }
