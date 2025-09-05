@@ -33,7 +33,7 @@ const int STP2P4 = 26;
 
 // 車体の数値
 const double WHEEL_D = 50.5; // ホイールの直径(mm)
-const double TREAD = 97.5;  // トレッド
+const double TREAD = 98.0;  // トレッド
 const double STEPS = 4096.0; // 1回転するのに必要なステップ数
 const double MMPS = M_PI * WHEEL_D / STEPS; // 1ステップで進む距離(milli meter per step)
 
