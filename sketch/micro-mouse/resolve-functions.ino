@@ -58,7 +58,7 @@ void resolve_shortest_path(int start_x, int start_y, Direction start_dir) {
   SERIAL_OUT.println("Resolving shortest path...");
   do {
     //SERIAL_OUT.printf("  Searching value: %d from (%d, %d)\n", path_value - 1, x, y);
-    if (y + 1 < MAZE_SIZE && (MAZE.walls[x][y] & 0b00010001) == 0 && STEPS_MAP[x][y + 1] == path_value - 1) { // 北
+    if (y + 1 < MAZE_SIZE && (MAZE.walls[x][y] & 0b00010001) == 0 && STEPS_MAP[x][y + 1] <= path_value - 1) { // 北
       next_x = x;
       next_y = y + 1;
       switch (direction) {
@@ -76,8 +76,9 @@ void resolve_shortest_path(int start_x, int start_y, Direction start_dir) {
           break;
       }
       direction = DIR_NORTH;
+      path_value = STEPS_MAP[x][y + 1];
     }
-    if (x - 1 >= 0 && (MAZE.walls[x][y] & 0b00100010) == 0 && STEPS_MAP[x - 1][y] == path_value - 1) { // 西
+    if (x - 1 >= 0 && (MAZE.walls[x][y] & 0b00100010) == 0 && STEPS_MAP[x - 1][y] <= path_value - 1) { // 西
       next_x = x - 1;
       next_y = y;
       switch (direction) {
@@ -95,8 +96,9 @@ void resolve_shortest_path(int start_x, int start_y, Direction start_dir) {
           break;
       }
       direction = DIR_WEST;
+      path_value = STEPS_MAP[x - 1][y];
     }
-    if (y - 1 >= 0 && (MAZE.walls[x][y] & 0b01000100) == 0 && STEPS_MAP[x][y - 1] == path_value - 1) { // 南
+    if (y - 1 >= 0 && (MAZE.walls[x][y] & 0b01000100) == 0 && STEPS_MAP[x][y - 1] <= path_value - 1) { // 南
       next_x = x;
       next_y = y - 1;
       switch (direction) {
@@ -114,8 +116,9 @@ void resolve_shortest_path(int start_x, int start_y, Direction start_dir) {
           break;
       }
       direction = DIR_SOUTH;
+      path_value = STEPS_MAP[x][y - 1];
     }
-    if (x + 1 < MAZE_SIZE && (MAZE.walls[x][y] & 0b10001000) == 0 && STEPS_MAP[x + 1][y] == path_value - 1) { // 東
+    if (x + 1 < MAZE_SIZE && (MAZE.walls[x][y] & 0b10001000) == 0 && STEPS_MAP[x + 1][y] <= path_value - 1) { // 東
       next_x = x + 1;
       next_y = y;
       switch (direction) {
@@ -133,9 +136,10 @@ void resolve_shortest_path(int start_x, int start_y, Direction start_dir) {
           break;
       }
       direction = DIR_EAST;
+      path_value = STEPS_MAP[x + 1][y];
     }
     path_length++;
-    path_value--;
+    //path_value--;
     x = next_x;
     y = next_y;
   } while (path_value > 0);
@@ -157,7 +161,7 @@ void print_shortest_path() {
 // ----------------------------------------------------------------------
 void make_steps_map(int start_x, int start_y, int goal_x, int goal_y) {
   // テストデータをコピー
-  //MAZE = TMAZE;
+  // MAZE = TMAZE;
   print_maze();
 
   // 歩数図を初期化
@@ -169,42 +173,86 @@ void make_steps_map(int start_x, int start_y, int goal_x, int goal_y) {
   STEPS_MAP[goal_x][goal_y] = 0; // ゴール位置は0
 
   int current_value = 0;
-  while (update_steps_map(start_x, start_y, current_value) != 0) {
+  while (update_steps_map(start_x, start_y, current_value, SMT_NORMAL) != 0) {
     current_value++;
+    /*
     SERIAL_OUT.printf("Current value: %d", current_value);
     SERIAL_OUT.println();
+    print_steps_map();
+    */
+    if (current_value > (MAZE_SIZE * MAZE_SIZE * 2)) break; // 無限ループ防止
   }
 
   print_steps_map(); // デバッグ用に歩数図を表示
 }
 
 // ----------------------------------------------------------------------
-int update_steps_map(int start_x, int start_y, uint8_t value) {
+// 歩数図を作る関数
+// type: SMT_NORMAL (通常) or SMT_FF (直進優先)
+int update_steps_map(int start_x, int start_y, int value, StepsMapType type) {
   for (int y = 0; y < MAZE_SIZE; y++) {
     for (int x = 0; x < MAZE_SIZE; x++) {
       if (STEPS_MAP[x][y] == value) {
-        //SERIAL_OUT.printf("Updating contour map at (%d, %d) with value %d", x, y, value);
-        //SERIAL_OUT.println();
         // 周囲の壁を調査
-        // 北の壁 and 配列の範囲外チェック and 通過済みセル and 等高線が更新されてない場合
+        // 北の壁がない and 配列の範囲外チェック and 通過済みセル and 等高線が更新されてない場合
         if ((MAZE.walls[x][y] & 0b00010001) == 0 && y + 1 < MAZE_SIZE && MAZE.passed[x][y + 1] != 0 && STEPS_MAP[x][y + 1] == 255) {
-          STEPS_MAP[x][y + 1] = value + 1;
-          if (x == start_x && (y + 1) == start_y) return 0; // スタート地点に到達したら終了
+          // 南の壁がない && 南の区画が更新済み
+          if ((MAZE.walls[x][y] & 0b01000100) == 0 && y - 1 >= 0 && (STEPS_MAP[x][y - 1] == (value - 1) || STEPS_MAP[x][y - 1] == (value - 3))) {
+            STEPS_MAP[x][y + 1] = value + 1;
+          }
+          else {
+            if (type == SMT_NORMAL) {
+              STEPS_MAP[x][y + 1] = value + 1;
+            }
+            else {
+              STEPS_MAP[x][y + 1] = value + 3;
+            }
+          }
         }
-        // 西の壁 and 配列の範囲外チェック and 通過済みセル and 等高線が更新されてない場合
+        // 西の壁がない and 配列の範囲外チェック and 通過済みセル and 等高線が更新されてない場合
         if ((MAZE.walls[x][y] & 0b00100010) == 0 && x - 1 >= 0 && MAZE.passed[x - 1][y] != 0 && STEPS_MAP[x - 1][y] == 255) {
-          STEPS_MAP[x - 1][y] = value + 1;
-          if ((x - 1) == start_x && y == start_y) return 0; // スタート地点に到達したら終了
+          // 東の壁がない && 東の区画が更新済み
+          if ((MAZE.walls[x][y] & 0b10001000) == 0 && x + 1 < MAZE_SIZE && (STEPS_MAP[x + 1][y] == (value - 1) || STEPS_MAP[x + 1][y] == (value - 3))) {
+            STEPS_MAP[x - 1][y] = value + 1;
+          }
+          else {
+            if (type == SMT_NORMAL) {
+              STEPS_MAP[x - 1][y] = value + 1;
+            }
+            else {
+              STEPS_MAP[x - 1][y] = value + 3;
+            }
+          }
         }
-        // 南の壁 and 配列の範囲外チェック and 通過済みセル and 等高線が更新されてない場合
+        // 南の壁がない and 配列の範囲外チェック and 通過済みセル and 等高線が更新されてない場合
         if ((MAZE.walls[x][y] & 0b01000100) == 0 && y - 1 >= 0 && MAZE.passed[x][y - 1] != 0 && STEPS_MAP[x][y - 1] == 255) {
-          STEPS_MAP[x][y - 1] = value + 1;
-          if (x == start_x && (y - 1) == start_y) return 0; // スタート地点に到達したら終了
+          // 北の壁がない && 北の区画が更新済み
+          if ((MAZE.walls[x][y] & 0b00010001) == 0 && y + 1 < MAZE_SIZE && (STEPS_MAP[x][y + 1] == (value - 1) || STEPS_MAP[x][y + 1] == (value - 3))) {
+            STEPS_MAP[x][y - 1] = value + 1;
+          }
+          else {
+            if (type == SMT_NORMAL) {
+              STEPS_MAP[x][y - 1] = value + 1;
+            }
+            else {
+              STEPS_MAP[x][y - 1] = value + 3;
+            }
+          }
         }
-        // 東の壁 and 配列の範囲外チェック and 通過済みセル and 等高線が更新されてない場合
+        // 東の壁がない and 配列の範囲外チェック and 通過済みセル and 等高線が更新されてない場合
         if ((MAZE.walls[x][y] & 0b10001000) == 0 && x + 1 < MAZE_SIZE && MAZE.passed[x + 1][y] != 0 && STEPS_MAP[x + 1][y] == 255) {
+          // 西の壁がない && 西の区画が更新済み
+          if ((MAZE.walls[x][y] & 0b00100010) == 0 && x - 1 >= 0 && (STEPS_MAP[x - 1][y] == (value - 1) || STEPS_MAP[x - 1][y] == (value - 3))) {
             STEPS_MAP[x + 1][y] = value + 1;
-          if ((x + 1) == start_x && y == start_y) return 0; // スタート地点に到達したら終了
+          }
+          else {
+            if (type == SMT_NORMAL) {
+              STEPS_MAP[x + 1][y] = value + 1;
+            }
+            else {
+              STEPS_MAP[x + 1][y] = value + 3;
+            }
+          }
         }
       }
     }
