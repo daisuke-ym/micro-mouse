@@ -49,6 +49,11 @@ void run_to_mm(double distance) {
   while (stepperL.stepsToGo() != 0 && stepperR.stepsToGo() != 0) {
     stepperL.run();
     stepperR.run();
+    if (SS_FL > FL_LIMIT || SS_FR > FL_LIMIT) { // 前方センサが閾値を超えたら停止
+      stepperL.stop();
+      stepperR.stop();
+      break;
+    }
   }
   stepperL.stop();
   stepperR.stop();
