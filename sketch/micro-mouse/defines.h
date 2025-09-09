@@ -198,4 +198,4 @@ uint8_t STATE_FLAG = 0;
 #define SF_RUNNING_R        0b01000000 // マウスが走行中（復路）
 #define SF_RUNNING_S        0b00100000 // マウスが走行中（最短経路）
 #define SF_SEARCH_COMPLETE  0b00010000 // 迷路全探索完了
-#define SF_ADJUST_TO_CENTER 0b00001000 // マウスを通路中央に値調整中
+#define SF_ADJUST_TO_CENTER 0b00001000 // マウスを通路中央に調整中
