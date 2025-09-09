@@ -83,6 +83,8 @@ char GOTO_STR[] = {'F', 'L', 'R', 'B'};
 
 // 壁があるかどうかの閾値
 const int WALL_TV = 1000; // 壁があるとみなすセンサ値の閾値
+const int FL_LIMIT = 3860; // センサ値の上限(これ以上行くと壁に衝突する)
+const int FR_LIMIT = 3955; // センサ値の上限(これ以上行くと壁に衝突する)
 
 // 迷路の大きさ
 #define MAZE_SIZE 4
