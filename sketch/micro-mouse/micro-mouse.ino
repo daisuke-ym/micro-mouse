@@ -39,6 +39,8 @@ void setup() {
   xTaskCreateUniversal(read_sensor_sma, "task_read_sensor_sma", 8192, NULL, 1, NULL, APP_CPU_NUM);
   // センサの値を出力するタスク
   xTaskCreateUniversal(print_sensor, "task_print_sensor", 8192, NULL, 1, NULL, APP_CPU_NUM);
+  // LCDに現在位置を出力するタスク
+  xTaskCreateUniversal(print_pos, "task_print_pos", 8192, NULL, 1, NULL, APP_CPU_NUM);
   // ステッパの値を出力するタスク
   //xTaskCreatePinnedToCore(print_steps, "task_print_steps", 8192, NULL, 1, NULL, APP_CPU_NUM);
   // BNO055 の値を読むタスク
@@ -219,5 +221,15 @@ void print_serialbt(void *pvParameters) {
     SerialBT.println(millis());
     // Task を回すうえで必ず必要な delay
     delay(1000);
+  }
+}
+
+// ----------------------------------------------------------------------
+// LCDに現在座標を表示するタスク
+void print_pos(void *pvParameters) {
+  while (1) {
+    lcd.setCursor(0, 0);
+    lcd.printf("%2d %2d", MAZE.x, MAZE.y);
+    delay(500);
   }
 }

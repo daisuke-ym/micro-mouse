@@ -66,13 +66,6 @@ void update_pos_and_walls() {
       MAZE.walls[MAZE.x][MAZE.y] = rotate_left(walls, DIR_WEST);
       break;
   }
-  // LCDに現在座標を表示
-  lcd.setCursor(0, 0);
-  lcd.print(MAZE.x);
-  lcd.print(" ");
-  lcd.setCursor(3, 0);
-  lcd.print(MAZE.y);
-  lcd.print(" ");
 }
 
 // ----------------------------------------------------------------------
