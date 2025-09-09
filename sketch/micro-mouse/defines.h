@@ -189,3 +189,13 @@ const int WALL_DIST[] = {
 };
 // 通路中央に置いたときの SS_L の値(壁まで28㎜)
 const int SS_L_CENTER = 2100;
+
+// ----------------------------------------------------------------------
+// マウスの状態を示すフラグ
+uint8_t STATE_FLAG = 0;
+// ビットフラグの定義 
+#define SF_RUNNING_O        0b10000000 // マウスが走行中（往路）
+#define SF_RUNNING_R        0b01000000 // マウスが走行中（復路）
+#define SF_RUNNING_S        0b00100000 // マウスが走行中（最短経路）
+#define SF_SEARCH_COMPLETE  0b00010000 // 迷路全探索完了
+#define SF_ADJUST_TO_CENTER 0b00001000 // マウスを通路中央に値調整中

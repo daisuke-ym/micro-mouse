@@ -21,6 +21,8 @@ void adjust_to_center() {
   const int center = 28; // 通路の中央に置いた時の壁までの距離
   const int margin = 5; // 調整マージン（この距離より小さい場合は補正しない）
 
+  // フラグを立てる
+  STATE_FLAG |= SF_ADJUST_TO_CENTER;
   // 最初に壁を背にして長めに後退する（車体の角度補正のため）
   run_to_mm(-60.0);
   delay(500);
@@ -66,4 +68,6 @@ void adjust_to_center() {
   } while (WALL_DIST[i] > now_ss_l);
   distance = (i - 1) * 5 + (WALL_DIST[i] - now_ss_l) * 5 / (WALL_DIST[i] - WALL_DIST[i - 1]);
   SERIAL_OUT.printf("SS_L: %d  approx dist to wall: %d\n", now_ss_l, distance);
+  // フラグを下ろす
+  STATE_FLAG &= ~SF_ADJUST_TO_CENTER;
 }

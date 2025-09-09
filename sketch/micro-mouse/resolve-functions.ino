@@ -6,6 +6,8 @@
 void run_shortest_path(int start_x, int start_y, int goal_x, int goal_y, Direction start_dir) {
   int i = 0;
 
+  // フラグを立てる（最短経路走行中）
+  STATE_FLAG |= SF_RUNNING_S;
   // 歩数図を作成
   make_steps_map(start_x, start_y, goal_x, goal_y);
   // 最短経路を求める
@@ -35,6 +37,8 @@ void run_shortest_path(int start_x, int start_y, int goal_x, int goal_y, Directi
     i++;
     delay(250);
   }
+  // フラグを下す
+  STATE_FLAG &= ~SF_RUNNING_S;
 }
 
 // ----------------------------------------------------------------------
