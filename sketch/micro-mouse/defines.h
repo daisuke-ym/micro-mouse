@@ -1,46 +1,16 @@
-  // センサと赤外線LED
-const int SENSOR_FL = 35;
-const int SENSOR_L  = 34;
-const int SENSOR_R  = 39;
-const int SENSOR_FR = 36;
-const int IRLED_R_FL = 27;
-const int IRLED_L_FR = 14;
-// センサの値(現在値)
-volatile int SS_FL = 0;
-volatile int SS_L = 0;
-volatile int SS_R = 0;
-volatile int SS_FR = 0;
+/*
+  グローバル変数やマクロの定義
+*/
+
 // センサの初期値（スタート位置での値）
 int INIT_SS_FL;
 int INIT_SS_L;
 int INIT_SS_R;
 int INIT_SS_FR;
-// スイッチとLED
-const int SW1 = 19;
-const int SW2 = 13;
-const int LED1 = 23;
-const int LED2 = 12;
-// ステッピングモータ左
-const int STP1P1 = 16;
-const int STP1P2 = 17;
-const int STP1P3 = 5;
-const int STP1P4 = 18;
-// ステッピングモータ右
-const int STP2P1 = 32;
-const int STP2P2 = 33;
-const int STP2P3 = 25;
-const int STP2P4 = 26;
-
-// 車体の数値
-const double WHEEL_D = 50.5; // ホイールの直径(mm)
-const double TREAD = 98.0;  // トレッド
-const double STEPS = 4096.0; // 1回転するのに必要なステップ数
-const double MMPS = M_PI * WHEEL_D / STEPS; // 1ステップで進む距離(milli meter per step)
 
 // ステッピングモータ
-const unsigned long DEFAULT_STEP_DELAY = 1000;
-Unistep2_mod stepperL(STP1P1, STP1P4, STP1P3, STP1P2, 4096, DEFAULT_STEP_DELAY); // stepperR と回転方向を合わせるため P2 と P4 を入れ替えている
-Unistep2_mod stepperR(STP2P1, STP2P2, STP2P3, STP2P4, 4096, DEFAULT_STEP_DELAY);
+Unistep2_mod stepperL(STP1P1, STP1P4, STP1P3, STP1P2, (int)STEPS, DEFAULT_STEP_DELAY); // stepperR と回転方向を合わせるため P2 と P4 を入れ替えている
+Unistep2_mod stepperR(STP2P1, STP2P2, STP2P3, STP2P4, (int)STEPS, DEFAULT_STEP_DELAY);
 
 // Bluetooth シリアル
 BluetoothSerial SerialBT;
@@ -80,11 +50,6 @@ enum ShortestPathToGo {
   GOTO_BACK    = 3, // 後退(未使用)
 };
 char GOTO_STR[] = {'F', 'L', 'R', 'B'};
-
-// 壁があるかどうかの閾値
-const int WALL_TV = 1000; // 壁があるとみなすセンサ値の閾値
-const int FL_LIMIT = 3860; // センサ値の上限(これ以上行くと壁に衝突する)
-const int FR_LIMIT = 3955; // センサ値の上限(これ以上行くと壁に衝突する)
 
 // 迷路の大きさ
 #define MAZE_SIZE 4
@@ -169,26 +134,6 @@ struct _MAZE TMAZE2 = {
              {1, 1, 1, 1}},
   .direction = DIR_NORTH
 };
-
-
-// ----------------------------------------------------------------------
-// 壁センサ(SS_L)の値と壁までの距離マップ
-const int WALL_DIST[] = {
-  3810, // 0mm
-  3730, // 5mm
-  3600, // 10mm
-  3140, // 15mm
-  2590, // 20mm
-  2280, // 25mm
-  1990, // 30mm
-  1765, // 35mm
-  1525, // 40mm
-  1390, // 45mm
-  1260, // 50mm
-  1170, // 53mm
-};
-// 通路中央に置いたときの SS_L の値(壁まで28㎜)
-const int SS_L_CENTER = 2100;
 
 // ----------------------------------------------------------------------
 // マウスの状態を示すフラグ
