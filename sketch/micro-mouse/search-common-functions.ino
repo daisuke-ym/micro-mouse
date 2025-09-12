@@ -163,6 +163,18 @@ uint8_t rotate_left(uint8_t x, uint8_t n) {
 // ----------------------------------------------------------------------
 // 迷路の状態を表示する関数（改良版）
 void print_maze() {
+  // 通過済みセルの状態を表示
+  SERIAL_OUT.println("Passed Cells:");
+  for (int y = MAZE_SIZE - 1; y >= 0; y--) {
+    for (int x = 0; x < MAZE_SIZE; x++) {
+      if (MAZE.passed[x][y]) {
+        SERIAL_OUT.printf("%2d", MAZE.passed[x][y]);
+      } else {
+        SERIAL_OUT.printf("%2d", 0);
+      }
+    }
+    SERIAL_OUT.println();
+  }
   // 迷路の状態を表示
   SERIAL_OUT.println("Maze:");
   // 北の外壁（北西隅）
