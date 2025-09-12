@@ -2,6 +2,11 @@
   グローバル変数やマクロの定義
 */
 
+// センサの値(現在値)
+volatile int SS_FL = 0;
+volatile int SS_L = 0;
+volatile int SS_R = 0;
+volatile int SS_FR = 0;
 // センサの初期値（スタート位置での値）
 int INIT_SS_FL;
 int INIT_SS_L;
