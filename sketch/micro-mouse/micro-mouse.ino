@@ -11,7 +11,7 @@
 void setup() {
   // serial
   Serial.begin(115200);
-  SerialBT.begin("ESP32_MicroMouse"); // Bluetooth シリアルの初期化
+  SerialBT.begin(BT_NAME); // Bluetooth シリアルの初期化
   // センサの初期設定
   analogReadResolution(12);
   pinMode(SENSOR_FL, INPUT);

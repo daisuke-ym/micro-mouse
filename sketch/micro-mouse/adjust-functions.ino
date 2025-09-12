@@ -18,7 +18,7 @@ void adjust_to_center() {
   int distance; // 壁までの距離
   int diff; // 補正する距離
   double angle; // 補正に必要な回転角度
-  const int center = 28; // 通路の中央に置いた時の壁までの距離
+  const int center = WALL_DIST_CENTER; // 通路の中央に置いた時の壁までの距離
   const int margin = 5; // 調整マージン（この距離より小さい場合は補正しない）
 
   // フラグを立てる

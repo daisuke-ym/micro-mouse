@@ -12,11 +12,6 @@ const int SENSOR_R  = 39;
 const int SENSOR_FR = 36;
 const int IRLED_R_FL = 27;
 const int IRLED_L_FR = 14;
-// センサの値(現在値)
-volatile int SS_FL = 0;
-volatile int SS_L = 0;
-volatile int SS_R = 0;
-volatile int SS_FR = 0;
 // スイッチとLED
 const int SW1 = 19;
 const int SW2 = 13;
@@ -32,6 +27,10 @@ const int STP2P1 = 32;
 const int STP2P2 = 33;
 const int STP2P3 = 25;
 const int STP2P4 = 26;
+
+// ----------------------------------------------------------------------
+// Bluetooth のデバイス名
+const char BT_NAME[] = "ESP32_MicroMouse";
 
 // ----------------------------------------------------------------------
 // ステッピングモータ
@@ -66,6 +65,7 @@ const int WALL_DIST[] = {
   1260, // 50mm
   1170, // 53mm
 };
-// 通路中央に置いたときの SS_L の値(壁まで28㎜)
+// 通路中央に置いたときの壁までの距離
+const int WALL_DIST_CENTER = 28;
+// 通路中央に置いたときの SS_L の値
 const int SS_L_CENTER = 2100;
-
