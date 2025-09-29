@@ -1,2 +1,2 @@
-parameters.h merge=ours
-arduino.json merge=ours
+sketch/micro-mouse/parameters.h  merge=ours
+sketch/micro-mouse/.vscode/arduino.json  merge=ours
