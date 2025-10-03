@@ -41,6 +41,20 @@ void go_uturn() {
 }
 
 // ----------------------------------------------------------------------
+void go_left_pivot() {
+  pivotturn(-90.0);
+  delay(100);
+  run_to_mm(86.0);
+}
+
+// ----------------------------------------------------------------------
+void go_right_pivot() {
+  pivotturn(90.0);
+  delay(100);
+  run_to_mm(86.0);
+}
+
+// ----------------------------------------------------------------------
 // mm単位で指定した距離だけ走る
 // マイナス値は後退
 void run_to_mm(double distance) {
@@ -79,7 +93,7 @@ void spinturn(double angle) {
 // 指定した角度だけ回転する（車輪の中心で旋回）
 // angle: 角度(度単位)
 // 右回りは正、左回りは負
-void pivoturn(double angle) {
+void pivotturn(double angle) {
   double a = angle / 360.0 * TREAD * 2.0 * M_PI / MMPS;
   if (angle > 0) {
     stepperL.move(a);

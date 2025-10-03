@@ -26,6 +26,33 @@ void test_decide_direction() {
 }
 
 // ----------------------------------------------------------------------
+void test_decide_direction_pivotturn() {
+  if (digitalRead(SW1) == LOW) {
+    // フラグを立てる（往路走行中）
+    STATE_FLAG |= SF_RUNNING_O;
+    delay(1000);
+    // ゴールを目指す
+    while (decide_direction_lefthand_pivotturn(MAZE_GOAL_X, MAZE_GOAL_Y) != 0) {
+      delay(250);
+    }
+    // フラグを下す
+    STATE_FLAG &= ~SF_RUNNING_O;
+    flash_alternate(20); // 目標到達時にLEDを点滅
+    delay(2000);
+    // スタート地点を目指す
+    // フラグを立てる（復路走行中）
+    STATE_FLAG |= SF_RUNNING_R;
+    while (decide_direction_lefthand_pivotturn(0, 0) != 0) {
+      delay(250);
+    }
+    // フラグを下す
+    STATE_FLAG &= ~SF_RUNNING_R;
+    flash_alternate(20); // 目標到達時にLEDを点滅
+    delay(2000);
+  }
+}
+
+// ----------------------------------------------------------------------
 void test_run_shortest_path() {
   if (digitalRead(SW2) == LOW) {
     delay(1000);
@@ -66,7 +93,7 @@ void test_spinturn() {
 void test_pivotturn() {
   if (digitalRead(SW1) == LOW) {
     delay(1000);
-    pivoturn(-90.0); // 90度左回り
+    pivotturn(-90.0); // 90度左回り
     flash_led(1, 5);
   }
 }
