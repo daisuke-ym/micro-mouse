@@ -41,9 +41,9 @@ void adjust_to_center() {
     diff = center - distance;
     angle = acos(1.0 - diff / TREAD) * 180.0 / M_PI; // 補正角度(deg)
     SERIAL_OUT.printf("Adjusting to center: move to right, diff: %d, angle: %.1f\n", diff, angle);
-    pivoturn(angle);
+    pivotturn(angle);
     delay(250);
-    pivoturn(-1 * angle);
+    pivotturn(-1 * angle);
     delay(250);
     run_to_mm(-1 * TREAD * sin(angle * M_PI / 180.0) - 10.0);
   }
@@ -52,9 +52,9 @@ void adjust_to_center() {
     diff = distance - center - 5;
     angle = acos(1.0 - diff / TREAD) * 180.0 / M_PI; // 補正角度(deg)
     SERIAL_OUT.printf("Adjusting to center: move to left, diff: %d, angle: %.1f\n", diff, angle);
-    pivoturn(-1 * angle);
+    pivotturn(-1 * angle);
     delay(250);
-    pivoturn(angle);
+    pivotturn(angle);
     delay(250);
     run_to_mm(-1 * TREAD * sin(angle * M_PI / 180.0) - 10.0);
   }
