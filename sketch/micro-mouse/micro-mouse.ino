@@ -27,16 +27,19 @@ void setup() {
   pinMode(LED1, OUTPUT);
   pinMode(LED2, OUTPUT);
   // BNO055 の初期化
-  if (!bno.begin()) {
-    Serial.print("BNO055 not detected. Check wiring.");
-    while (1);
+  if (bno.begin()) {
+    SERIAL_OUT.println("BNO055 detected.");
+    bno.setExtCrystalUse(false);
+    // BNO055 の初期化完了まで待つ
+    delay(1000);
+    // BNO055 の値を読むタスク
+    xTaskCreatePinnedToCore(read_bno, "task_read_bno", 8192, NULL, 1, NULL, APP_CPU_NUM);
   }
-  bno.setExtCrystalUse(false);
-  // BNO055 の初期化完了まで待つ
-  delay(1000);
+  else {
+    SERIAL_OUT.println("BNO055 not detected. Check wiring.");
+  }
 
   // センサの値を読むタスク
-  //xTaskCreateUniversal(read_sensor, "task_read_sensor", 8192, NULL, 1, NULL, APP_CPU_NUM);
   xTaskCreateUniversal(read_sensor_sma, "task_read_sensor_sma", 8192, NULL, 1, NULL, APP_CPU_NUM);
   // センサの値を出力するタスク
   xTaskCreateUniversal(print_sensor, "task_print_sensor", 8192, NULL, 1, NULL, APP_CPU_NUM);
@@ -44,12 +47,6 @@ void setup() {
   xTaskCreateUniversal(print_pos, "task_print_pos", 8192, NULL, 1, NULL, APP_CPU_NUM);
   // LCDにフラグを出力するタスク
   xTaskCreateUniversal(print_state_flags, "task_print_state_flags", 8192, NULL, 1, NULL, APP_CPU_NUM);
-  // ステッパの値を出力するタスク
-  //xTaskCreatePinnedToCore(print_steps, "task_print_steps", 8192, NULL, 1, NULL, APP_CPU_NUM);
-  // BNO055 の値を読むタスク
-  xTaskCreatePinnedToCore(read_bno, "task_read_bno", 8192, NULL, 1, NULL, APP_CPU_NUM);
-  // Bluetooth に値を出力するタスク
-  //xTaskCreatePinnedToCore(print_serialbt, "task_print_serialbt", 8192, NULL, 1, NULL, APP_CPU_NUM);
 
   // 迷路の初期化
   init_maze();
