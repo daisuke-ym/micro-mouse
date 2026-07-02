@@ -190,47 +190,32 @@ void print_maze() {
     SERIAL_OUT.print("|");
     // 東の壁（東隣のセルの西の壁）
     for (int x = 0; x < MAZE_SIZE; x++) {
-      if ((MAZE.walls[x][y] & 0b10001000) != 0 || (x < MAZE_SIZE - 1 && (MAZE.walls[x + 1][y] & 0b00100010) != 0)) {
-        if (MAZE.x == x && MAZE.y == y) { // マウスの位置
-          switch (MAZE.direction) {
-            case DIR_NORTH:
-              SERIAL_OUT.print(" ^ |");
-              break;
-            case DIR_EAST:
-              SERIAL_OUT.print(" > |");
-              break;
-            case DIR_SOUTH:
-              SERIAL_OUT.print(" v |");
-              break;
-            case DIR_WEST:
-              SERIAL_OUT.print(" < |");
-              break;
-          }
-        }
-        else {
-          SERIAL_OUT.print("   |");
+      // 現在座標にマウスがいれば、マウスの向きを描画
+      if (MAZE.x == x && MAZE.y == y) {
+        switch (MAZE.direction) {
+          case DIR_NORTH:
+            SERIAL_OUT.print(" ^ ");
+            break;
+          case DIR_EAST:
+            SERIAL_OUT.print(" > ");
+            break;
+          case DIR_SOUTH:
+            SERIAL_OUT.print(" v ");
+            break;
+          case DIR_WEST:
+            SERIAL_OUT.print(" < ");
+            break;
         }
       }
+      else { // マウスがいなければ空白を描画
+        SERIAL_OUT.print("   ");
+      }
+      // 壁の描画
+      if ((MAZE.walls[x][y] & 0b10001000) != 0 || (x < MAZE_SIZE - 1 && (MAZE.walls[x + 1][y] & 0b00100010) != 0)) {
+        SERIAL_OUT.print("|");
+      }
       else {
-        if (MAZE.x == x && MAZE.y == y) { // マウスの位置
-          switch (MAZE.direction) {
-            case DIR_NORTH:
-              SERIAL_OUT.print(" ^  ");
-              break;
-            case DIR_EAST:
-              SERIAL_OUT.print(" >  ");
-              break;
-            case DIR_SOUTH:
-              SERIAL_OUT.print(" v  ");
-              break;
-            case DIR_WEST:
-              SERIAL_OUT.print(" <  ");
-              break;
-          }
-        }
-        else {
-          SERIAL_OUT.print("    ");
-        }
+        SERIAL_OUT.print(" ");
       }
     }
     SERIAL_OUT.println();
