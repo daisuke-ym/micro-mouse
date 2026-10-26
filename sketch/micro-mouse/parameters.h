@@ -50,6 +50,6 @@ const int WALL_DIST[] = {
    655, // 60mm
 };
 // 通路中央に置いたときの壁までの距離
-const int WALL_DIST_CENTER = 27;
+const int WALL_DIST_CENTER = 35;
 // 通路中央に置いたときの SS_L の値
 const int SS_L_CENTER = 1395;
