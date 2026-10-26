@@ -1,5 +1,5 @@
 #include <BluetoothSerial.h>
-#include <Unistep2_mod.h>
+#include <AccelStepper.h>
 #include <ST7032_asukiaaa.h>
 #include <math.h>
 #include <Wire.h>
@@ -18,18 +18,18 @@ void setup() {
   pinMode(IRLED_L_FR, OUTPUT);
   pinMode(IRLED_R_FL, OUTPUT);
   // LCDの初期化
-  lcd.begin(16, 2);
-  lcd.setContrast(40);
-  lcd.clear();
+  LCD.begin(16, 2);
+  LCD.setContrast(40);
+  LCD.clear();
   // スイッチとLEDの初期設定
   pinMode(SW1, INPUT_PULLUP);
   pinMode(SW2, INPUT_PULLUP);
   pinMode(LED1, OUTPUT);
   pinMode(LED2, OUTPUT);
   // BNO055 の初期化
-  if (bno.begin()) {
+  if (BNO.begin()) {
     SERIAL_OUT.println("BNO055 detected.");
-    bno.setExtCrystalUse(false);
+    BNO.setExtCrystalUse(false);
     // BNO055 の初期化完了まで待つ
     delay(1000);
     // BNO055 の値を読むタスク
@@ -159,10 +159,10 @@ void read_sensor_sma(void *pvParameters) {
 // ----------------------------------------------------------------------
 void print_sensor(void *pvParameters) {
   while (1) {
-    lcd.setCursor(7, 0);
-    lcd.printf("%4d %4d", SS_FL, SS_FR);
-    lcd.setCursor(7, 1);
-    lcd.printf("%4d %4d", SS_L, SS_R);
+    LCD.setCursor(7, 0);
+    LCD.printf("%4d %4d", SS_FL, SS_FR);
+    LCD.setCursor(7, 1);
+    LCD.printf("%4d %4d", SS_L, SS_R);
     /*
     Serial.print(SS_L);
     Serial.print("\t");
@@ -179,16 +179,16 @@ void print_sensor(void *pvParameters) {
 
 // ----------------------------------------------------------------------
 void print_steps(void *args) {
-  static unsigned long lcd_period = 0;
+  static unsigned long LCD_period = 0;
 
   while (1) {
-    lcd.setCursor(0, 0);
-    lcd.print(stepperL.stepsToGo());
-    lcd.print("   ");
-    lcd.setCursor(8, 0);
-    lcd.print(stepperR.stepsToGo());
-    lcd.print("   ");
-    lcd_period = millis();
+    LCD.setCursor(0, 0);
+    LCD.print(STP_L.distanceToGo());
+    LCD.print("   ");
+    LCD.setCursor(8, 0);
+    LCD.print(STP_R.distanceToGo());
+    LCD.print("   ");
+    LCD_period = millis();
     delay(100);
   }
 }
@@ -197,7 +197,7 @@ void print_steps(void *args) {
 void read_bno(void *pvParameters) {
 
   while (1) {
-    imu::Vector<3> IMU_EULER = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+    imu::Vector<3> IMU_EULER = BNO.getVector(Adafruit_BNO055::VECTOR_EULER);
     DIR_X = IMU_EULER.x();
     DIR_Y = IMU_EULER.y();
     DIR_Z = IMU_EULER.z();
@@ -228,8 +228,8 @@ void print_serialbt(void *pvParameters) {
 // LCDに現在座標を表示するタスク
 void print_pos(void *pvParameters) {
   while (1) {
-    lcd.setCursor(0, 0);
-    lcd.printf("%2d %2d", MAZE.x, MAZE.y);
+    LCD.setCursor(0, 0);
+    LCD.printf("%2d %2d", MAZE.x, MAZE.y);
     delay(500);
   }
 }
@@ -238,8 +238,8 @@ void print_pos(void *pvParameters) {
 // LCDにフラグを表示するタスク
 void print_state_flags(void *pvParameters) {
   while (1) {
-    lcd.setCursor(0, 1);
-    lcd.printf("%c%c%c%c%c", 
+    LCD.setCursor(0, 1);
+    LCD.printf("%c%c%c%c%c", 
       (STATE_FLAG & SF_RUNNING_O) ? 'O' : '-', 
       (STATE_FLAG & SF_RUNNING_R) ? 'R' : '-',
       (STATE_FLAG & SF_RUNNING_S) ? 'S' : '-', 

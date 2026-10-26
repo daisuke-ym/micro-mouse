@@ -81,33 +81,33 @@ void test_run_to_mm() {
 }
 
 // ----------------------------------------------------------------------
-void test_spinturn() {
+void test_spin_turn() {
   if (digitalRead(SW1) == LOW) {
     delay(1000);
-    spinturn(90.0); // 90度右回り
+    spin_turn(90.0); // 90度右回り
     flash_led(1, 5);
   }
 }
 
 // ----------------------------------------------------------------------
-void test_pivotturn() {
+void test_pivot_turn() {
   if (digitalRead(SW1) == LOW) {
     delay(1000);
-    pivotturn(-90.0); // 90度左回り
+    pivot_turn(-90.0); // 90度左回り
     flash_led(1, 5);
   }
 }
 
 // ----------------------------------------------------------------------
-void test_spinturn_imu() {
+void test_spin_turn_imu() {
   if (digitalRead(SW1) == LOW) {
     delay(1000);
-    spinturn_imu(-90.0); // 90度左回り
+    spin_turn_imu(-90.0); // 90度左回り
     flash_led(1, 5);
   }
   if (digitalRead(SW2) == LOW) {
     delay(1000);
-    spinturn_imu(90.0); // 90度右回り
+    spin_turn_imu(90.0); // 90度右回り
     flash_led(2, 5);
   }
 }

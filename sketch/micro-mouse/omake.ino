@@ -16,29 +16,31 @@ void get_sensor_value_while_rotating() {
   delay(500);
   run_to_mm(25.0);
   delay(500);
-  stepperL.stepDelay(DEFAULT_STEP_DELAY * 5);
-  stepperR.stepDelay(DEFAULT_STEP_DELAY * 5);
+  //STP_L.stepDelay(DEFAULT_STEP_DELAY * 5);
+  //STP_R.stepDelay(DEFAULT_STEP_DELAY * 5);
 
   a = -1 * step_angle / 360.0 * TREAD * M_PI / MMPS;
   for (int i = 0; i < (search_angle / step_angle); i++) {
-    stepperL.move(a);
-    stepperR.move(-1 * a);
-    while (stepperL.stepsToGo() != 0 && stepperR.stepsToGo() != 0) {
-      stepperL.run();
-      stepperR.run();
+    STP_L.move(a);
+    STP_R.move(-1 * a);
+    while (STP_L.distanceToGo() != 0 && STP_R.distanceToGo() != 0) {
+      STP_L.run();
+      STP_R.run();
     }
   }
-  stepperL.stop();
-  stepperR.stop();
+  STP_L.move(0); // 2回目以降呼び出したときに蛇行しないようにする処理
+  STP_R.move(0);
+  STP_L.disableOutputs(); // 停止後モーターの発熱を抑える処理
+  STP_R.disableOutputs();
   delay(500);
 
   a = step_angle / 360.0 * TREAD * M_PI / MMPS;
   for (int i = 0; i < (search_angle * 2.0 / step_angle); i++) {
-    stepperL.move(a);
-    stepperR.move(-1 * a);
-    while (stepperL.stepsToGo() != 0 && stepperR.stepsToGo() != 0) {
-      stepperL.run();
-      stepperR.run();
+    STP_L.move(a);
+    STP_R.move(-1 * a);
+    while (STP_L.distanceToGo() != 0 && STP_R.distanceToGo() != 0) {
+      STP_L.run();
+      STP_R.run();
     }
     if (SS_L > peak_ss[0]) {
       peak_ss[0] = SS_L;
@@ -62,18 +64,20 @@ void get_sensor_value_while_rotating() {
 
   a = -1 * step_angle / 360.0 * TREAD * M_PI / MMPS;
   for (int i = 0; i < (search_angle / step_angle); i++) {
-    stepperL.move(a);
-    stepperR.move(-1 * a);
-    while (stepperL.stepsToGo() != 0 && stepperR.stepsToGo() != 0) {
-      stepperL.run();
-      stepperR.run();
+    STP_L.move(a);
+    STP_R.move(-1 * a);
+    while (STP_L.distanceToGo() != 0 && STP_R.distanceToGo() != 0) {
+      STP_L.run();
+      STP_R.run();
     }
   }
-  stepperL.stop();
-  stepperR.stop();
+  STP_L.move(0); // 2回目以降呼び出したときに蛇行しないようにする処理
+  STP_R.move(0);
+  STP_L.disableOutputs(); // 停止後モーターの発熱を抑える処理
+  STP_R.disableOutputs();
 
-  stepperL.stepDelay(DEFAULT_STEP_DELAY);
-  stepperR.stepDelay(DEFAULT_STEP_DELAY);
+  //STP_L.stepDelay(DEFAULT_STEP_DELAY);
+  //STP_R.stepDelay(DEFAULT_STEP_DELAY);
 
   SERIAL_OUT.println("Peak sensor values:");
   SERIAL_OUT.printf("L: %d at %.1f degrees\n", peak_ss[0], peak_angle[0]);

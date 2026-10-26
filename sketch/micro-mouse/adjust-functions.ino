@@ -20,11 +20,12 @@ void adjust_to_center() {
   double angle; // 補正に必要な回転角度
   const int center = WALL_DIST_CENTER; // 通路の中央に置いた時の壁までの距離
   const int margin = 5; // 調整マージン（この距離より小さい場合は補正しない）
-
+  const int additional_back_dist = 40; // 余分に後退する距離
+  
   // フラグを立てる
   STATE_FLAG |= SF_ADJUST_TO_CENTER;
   // 最初に壁を背にして長めに後退する（車体の角度補正のため）
-  run_to_mm(-60.0);
+  run_to_mm(-80.0);
   delay(500);
   now_ss_l = SS_L;
   // 壁までの距離マップから距離を推定（直線補完）する
@@ -41,22 +42,22 @@ void adjust_to_center() {
     diff = center - distance;
     angle = acos(1.0 - diff / TREAD) * 180.0 / M_PI; // 補正角度(deg)
     SERIAL_OUT.printf("Adjusting to center: move to right, diff: %d, angle: %.1f\n", diff, angle);
-    pivotturn(angle);
+    pivot_turn(angle);
     delay(250);
-    pivotturn(-1 * angle);
+    pivot_turn(-1 * angle);
     delay(250);
-    run_to_mm(-1 * TREAD * sin(angle * M_PI / 180.0) - 10.0);
+    run_to_mm(-1 * TREAD * sin(angle * M_PI / 180.0) - additional_back_dist);
   }
   else if (distance > (center + margin)) {
     // 右寄りなので左に移動して補正
     diff = distance - center - 5;
     angle = acos(1.0 - diff / TREAD) * 180.0 / M_PI; // 補正角度(deg)
     SERIAL_OUT.printf("Adjusting to center: move to left, diff: %d, angle: %.1f\n", diff, angle);
-    pivotturn(-1 * angle);
+    pivot_turn(-1 * angle);
     delay(250);
-    pivotturn(angle);
+    pivot_turn(angle);
     delay(250);
-    run_to_mm(-1 * TREAD * sin(angle * M_PI / 180.0) - 10.0);
+    run_to_mm(-1 * TREAD * sin(angle * M_PI / 180.0) - additional_back_dist);
   }
   delay(500);
   // 補正後の距離を再度計算

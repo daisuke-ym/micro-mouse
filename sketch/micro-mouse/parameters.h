@@ -1,72 +1,55 @@
-/*
-  機体固有の値を定義するヘッダファイル
-  ここを変更することで、機体に合わせた調整が可能
-*/
-
 // ----------------------------------------------------------------------
-// ピンの定義
-// センサと赤外線LED
-const int SENSOR_FL = 35;
-const int SENSOR_L  = 34;
-const int SENSOR_R  = 39;
-const int SENSOR_FR = 36;
-const int IRLED_R_FL = 27;
-const int IRLED_L_FR = 14;
-// スイッチとLED
-const int SW1 = 19;
-const int SW2 = 13;
-const int LED1 = 23;
-const int LED2 = 12;
-// ステッピングモータ左
-const int STP1P1 = 16;
-const int STP1P2 = 17;
-const int STP1P3 = 5;
-const int STP1P4 = 18;
-// ステッピングモータ右
-const int STP2P1 = 32;
-const int STP2P2 = 33;
-const int STP2P3 = 25;
-const int STP2P4 = 26;
+// 車体固有の情報
 
 // ----------------------------------------------------------------------
 // Bluetooth のデバイス名
-const char BT_NAME[] = "ESP32_MicroMouse";
-
-// ----------------------------------------------------------------------
-// ステッピングモータ
-const double STEPS = 4096.0; // 1回転するのに必要なステップ数
-const unsigned long DEFAULT_STEP_DELAY = 1000; // 回転速度（unistep2_mod でのディレイ値：小さいほど回転が速い）
+const char BT_NAME[] = "EAM_daisuke-han";
 
 // ----------------------------------------------------------------------
 // 車体の数値
-const double WHEEL_D = 63.0; // ホイールの直径(mm)
-const double TREAD = 97.0;  // トレッド
+const double STEPS = 524.0; // 1回転するのに必要なステップ数
+const double WHEEL_D = 54.8; // ホイールの直径(mm)
+const double TREAD = 98.0; // トレッド(mm)
 const double MMPS = M_PI * WHEEL_D / STEPS; // 1ステップで進む距離(milli meter per step)
+int MAX_SPEED = 400;
+int MAX_ACCEL = 400;
+
+// ----------------------------------------------------------------------
+// センサーの値
+volatile int SS_FL = 0;
+volatile int SS_L = 0;
+volatile int SS_R = 0;
+volatile int SS_FR = 0;
+// センサの初期値（スタート位置での値）
+int INIT_SS_FL;
+int INIT_SS_L;
+int INIT_SS_R;
+int INIT_SS_FR;
 
 // ----------------------------------------------------------------------
 // 壁があるかどうかの閾値
-const int WALL_TV = 1000; // 壁があるとみなすセンサ値の閾値
-const int FL_LIMIT = 3860; // センサ値の上限(これ以上行くと壁に衝突する)
-const int FR_LIMIT = 3955; // センサ値の上限(これ以上行くと壁に衝突する)
+const int WALL_TV = 300; // 壁があるとみなすセンサ値の閾値
+const int FL_LIMIT = 3760; // センサ値の上限(これ以上行くと壁に衝突する)
+const int FR_LIMIT = 3855; // センサ値の上限(これ以上行くと壁に衝突する)
 
 // ----------------------------------------------------------------------
 // 壁センサ(SS_L)の値と壁までの距離マップ
 const int WALL_DIST[] = {
-  3818, // 0mm
-  3795, // 5mm
-  3725, // 10mm
-  3525, // 15mm
-  2950, // 20mm
-  2520, // 25mm
-  2170, // 30mm
-  1870, // 35mm
-  1660, // 40mm
-  1465, // 45mm
-  1285, // 50mm
-  1175, // 55mm
-  1065, // 60mm
+  3670, // 0mm
+  3650, // 5mm
+  3370, // 10mm
+  2800, // 15mm
+  2320, // 20mm
+  1895, // 25mm
+  1565, // 30mm
+  1320, // 35mm
+  1140, // 40mm
+   965, // 45mm
+   845, // 50mm
+   735, // 55mm
+   655, // 60mm
 };
 // 通路中央に置いたときの壁までの距離
-const int WALL_DIST_CENTER = 33;
+const int WALL_DIST_CENTER = 27;
 // 通路中央に置いたときの SS_L の値
-const int SS_L_CENTER = 2000;
+const int SS_L_CENTER = 1395;
