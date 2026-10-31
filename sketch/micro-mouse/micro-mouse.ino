@@ -60,7 +60,7 @@ void loop() {
     SERIAL_OUT.println(millis());
     start_time = millis();
   }
-  test_decide_direction_tremaux();
+  test_decide_direction_adachi();
   test_run_shortest_path();
 }
 

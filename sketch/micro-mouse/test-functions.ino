@@ -178,3 +178,34 @@ void test_decide_direction_tremaux() {
     delay(2000);
   }
 }
+
+// ----------------------------------------------------------------------
+void test_decide_direction_adachi() {
+  if (digitalRead(SW1) == LOW) {
+    int result = -1;
+    STATE_FLAG |= SF_RUNNING_O;
+    delay(1000);
+    while ((result = decide_direction_adachi(MAZE_GOAL_X, MAZE_GOAL_Y)) == -1) {
+      delay(250);
+    }
+    STATE_FLAG &= ~SF_RUNNING_O;
+    if (result != 0) {
+      SERIAL_OUT.println("Adachi search stopped before reaching goal.");
+      return;
+    }
+
+    flash_alternate(20);
+    delay(2000);
+    STATE_FLAG |= SF_RUNNING_R;
+    while ((result = decide_direction_adachi(0, 0)) == -1) {
+      delay(250);
+    }
+    STATE_FLAG &= ~SF_RUNNING_R;
+    if (result != 0) {
+      SERIAL_OUT.println("Adachi return stopped before reaching start.");
+      return;
+    }
+    flash_alternate(20);
+    delay(2000);
+  }
+}
