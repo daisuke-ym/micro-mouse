@@ -1,28 +1,26 @@
 // ----------------------------------------------------------------------
 void test_decide_direction() {
-  if (digitalRead(SW1) == LOW) {
-    // フラグを立てる（往路走行中）
-    STATE_FLAG |= SF_RUNNING_O;
-    delay(1000);
-    // ゴールを目指す
-    while (decide_direction_lefthand(MAZE_GOAL_X, MAZE_GOAL_Y) != 0) {
-      delay(250);
-    }
-    // フラグを下す
-    STATE_FLAG &= ~SF_RUNNING_O;
-    flash_alternate(20); // 目標到達時にLEDを点滅
-    delay(2000);
-    // スタート地点を目指す
-    // フラグを立てる（復路走行中）
-    STATE_FLAG |= SF_RUNNING_R;
-    while (decide_direction_lefthand(0, 0) != 0) {
-      delay(250);
-    }
-    // フラグを下す
-    STATE_FLAG &= ~SF_RUNNING_R;
-    flash_alternate(20); // 目標到達時にLEDを点滅
-    delay(2000);
+  // フラグを立てる（往路走行中）
+  STATE_FLAG |= SF_RUNNING_O;
+  delay(1000);
+  // ゴールを目指す
+  while (decide_direction_lefthand(MAZE_GOAL_X, MAZE_GOAL_Y) != 0) {
+    delay(250);
   }
+  // フラグを下す
+  STATE_FLAG &= ~SF_RUNNING_O;
+  flash_alternate(20); // 目標到達時にLEDを点滅
+  delay(2000);
+  // スタート地点を目指す
+  // フラグを立てる（復路走行中）
+  STATE_FLAG |= SF_RUNNING_R;
+  while (decide_direction_lefthand(0, 0) != 0) {
+    delay(250);
+  }
+  // フラグを下す
+  STATE_FLAG &= ~SF_RUNNING_R;
+  flash_alternate(20); // 目標到達時にLEDを点滅
+  delay(2000);
 }
 
 // ----------------------------------------------------------------------
@@ -54,16 +52,14 @@ void test_decide_direction_pivotturn() {
 
 // ----------------------------------------------------------------------
 void test_run_shortest_path() {
-  if (digitalRead(SW2) == LOW) {
-    MAZE.x = 0;
-    MAZE.y = 0;
-    MAZE.direction = DIR_NORTH;
-    SERIAL_OUT.printf("Starting shortest path from (%d, %d)\n", MAZE.x, MAZE.y);
-    delay(1000);
-    run_shortest_path(0, 0, MAZE_GOAL_X, MAZE_GOAL_Y, DIR_NORTH);
-    flash_alternate(20); // 最短経路実行時にLEDを点滅
-    delay(2000);
-  }
+  MAZE.x = 0;
+  MAZE.y = 0;
+  MAZE.direction = DIR_NORTH;
+  SERIAL_OUT.printf("Starting shortest path from (%d, %d)\n", MAZE.x, MAZE.y);
+  delay(1000);
+  run_shortest_path(0, 0, MAZE_GOAL_X, MAZE_GOAL_Y, DIR_NORTH);
+  flash_alternate(20); // 最短経路実行時にLEDを点滅
+  delay(2000);
 }
 
 // ----------------------------------------------------------------------
@@ -145,67 +141,63 @@ void test_adjust_to_center() {
 
 // ----------------------------------------------------------------------
 void test_decide_direction_tremaux() {
-  if (digitalRead(SW1) == LOW) {
-    // フラグを立てる（往路走行中）
-    STATE_FLAG |= SF_RUNNING_O;
-    delay(1000);
-    // ゴールを目指す
-    while (decide_direction_tremaux(MAZE_GOAL_X, MAZE_GOAL_Y) != 0) {
-      delay(250);
-    }
-    // フラグを下す
-    STATE_FLAG &= ~SF_RUNNING_O;
-    flash_alternate(20); // 目標到達時にLEDを点滅
-    delay(2000);
-    // スタート地点を目指す
-    // フラグを立てる（復路走行中）
-    STATE_FLAG |= SF_RUNNING_R;
-    while (decide_direction_tremaux(0, 0) != 0) {
-      if (count_unsearched_cells() == 0) {
-        // フラグを立てる（迷路全探索完了）
-        STATE_FLAG |= SF_SEARCH_COMPLETE;
-        // 全探索済みなら最短経路で戻る
-        SERIAL_OUT.println("Search complete!");
-        flash_led(1, 5);
-        run_shortest_path(MAZE.x, MAZE.y, 0, 0, MAZE.direction);
-        break;
-      }
-      delay(250);
-    }
-    // フラグを下す
-    STATE_FLAG &= ~SF_RUNNING_R;
-    flash_alternate(20); // 目標到達時にLEDを点滅
-    delay(2000);
+  // フラグを立てる（往路走行中）
+  STATE_FLAG |= SF_RUNNING_O;
+  delay(1000);
+  // ゴールを目指す
+  while (decide_direction_tremaux(MAZE_GOAL_X, MAZE_GOAL_Y) != 0) {
+    delay(250);
   }
+  // フラグを下す
+  STATE_FLAG &= ~SF_RUNNING_O;
+  flash_alternate(20); // 目標到達時にLEDを点滅
+  delay(2000);
+  // スタート地点を目指す
+  // フラグを立てる（復路走行中）
+  STATE_FLAG |= SF_RUNNING_R;
+  while (decide_direction_tremaux(0, 0) != 0) {
+    if (count_unsearched_cells() == 0) {
+      // フラグを立てる（迷路全探索完了）
+      STATE_FLAG |= SF_SEARCH_COMPLETE;
+      // 全探索済みなら最短経路で戻る
+      SERIAL_OUT.println("Search complete!");
+      flash_led(1, 5);
+      run_shortest_path(MAZE.x, MAZE.y, 0, 0, MAZE.direction);
+      break;
+    }
+    delay(250);
+  }
+  // フラグを下す
+  STATE_FLAG &= ~SF_RUNNING_R;
+  flash_alternate(20); // 目標到達時にLEDを点滅
+  delay(2000);
 }
 
 // ----------------------------------------------------------------------
 void test_decide_direction_adachi() {
-  if (digitalRead(SW1) == LOW) {
-    int result = -1;
-    STATE_FLAG |= SF_RUNNING_O;
-    delay(1000);
-    while ((result = decide_direction_adachi(MAZE_GOAL_X, MAZE_GOAL_Y)) == -1) {
-      delay(250);
-    }
-    STATE_FLAG &= ~SF_RUNNING_O;
-    if (result != 0) {
-      SERIAL_OUT.println("Adachi search stopped before reaching goal.");
-      return;
-    }
-
-    flash_alternate(20);
-    delay(2000);
-    STATE_FLAG |= SF_RUNNING_R;
-    while ((result = decide_direction_adachi(0, 0)) == -1) {
-      delay(250);
-    }
-    STATE_FLAG &= ~SF_RUNNING_R;
-    if (result != 0) {
-      SERIAL_OUT.println("Adachi return stopped before reaching start.");
-      return;
-    }
-    flash_alternate(20);
-    delay(2000);
+  int result = -1;
+  STATE_FLAG |= SF_RUNNING_O;
+  delay(1000);
+  while ((result = decide_direction_adachi(MAZE_GOAL_X, MAZE_GOAL_Y)) == -1) {
+    delay(250);
   }
+  STATE_FLAG &= ~SF_RUNNING_O;
+  if (result != 0) {
+    SERIAL_OUT.println("Adachi search stopped before reaching goal.");
+    return;
+  }
+
+  flash_alternate(20);
+  delay(2000);
+  STATE_FLAG |= SF_RUNNING_R;
+  while ((result = decide_direction_adachi(0, 0)) == -1) {
+    delay(250);
+  }
+  STATE_FLAG &= ~SF_RUNNING_R;
+  if (result != 0) {
+    SERIAL_OUT.println("Adachi return stopped before reaching start.");
+    return;
+  }
+  flash_alternate(20);
+  delay(2000);
 }

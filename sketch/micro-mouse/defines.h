@@ -144,9 +144,32 @@ struct _MAZE TMAZE2 = {
 // ----------------------------------------------------------------------
 // マウスの状態を示すフラグ
 uint8_t STATE_FLAG = 0;
+
+enum MenuItem {
+  MENU_LEFT_HAND,
+  MENU_TREMAUX,
+  MENU_ADACHI,
+  MENU_SHORTEST_PATH,
+  MENU_SENSOR_DISPLAY,
+};
+
 // ビットフラグの定義 
 #define SF_RUNNING_O        0b10000000 // マウスが走行中（往路）
 #define SF_RUNNING_R        0b01000000 // マウスが走行中（復路）
 #define SF_RUNNING_S        0b00100000 // マウスが走行中（最短経路）
 #define SF_SEARCH_COMPLETE  0b00010000 // 迷路全探索完了
 #define SF_ADJUST_TO_CENTER 0b00001000 // マウスを通路中央に調整中
+
+// ----------------------------------------------------------------------
+// メニュー選択に関する定義
+volatile bool MENU_ACTIVE = false;
+
+const char *MENU_LABELS[] = {
+  "Left-hand",
+  "Tremaux",
+  "Adachi",
+  "Shortest path",
+  "Sensors",
+};
+
+const uint8_t MENU_ITEM_COUNT = sizeof(MENU_LABELS) / sizeof(MENU_LABELS[0]);

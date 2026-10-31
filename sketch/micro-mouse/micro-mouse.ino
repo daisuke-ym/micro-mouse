@@ -60,8 +60,28 @@ void loop() {
     SERIAL_OUT.println(millis());
     start_time = millis();
   }
-  test_decide_direction_adachi();
-  test_run_shortest_path();
+  
+  switch (menu_control()) {
+    case MENU_LEFT_HAND:
+      delay(1000);
+      test_decide_direction();
+      break;
+    case MENU_TREMAUX:
+      delay(1000);
+      test_decide_direction_tremaux();
+      break;
+    case MENU_ADACHI:
+      delay(1000);
+      test_decide_direction_adachi();
+      break;
+    case MENU_SHORTEST_PATH:
+      delay(1000);
+      test_run_shortest_path();
+      break;
+    case MENU_SENSOR_DISPLAY:
+      display_sensor_values();
+      break;
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -159,10 +179,12 @@ void read_sensor_sma(void *pvParameters) {
 // ----------------------------------------------------------------------
 void print_sensor(void *pvParameters) {
   while (1) {
-    LCD.setCursor(7, 0);
-    LCD.printf("%4d %4d", SS_FL, SS_FR);
-    LCD.setCursor(7, 1);
-    LCD.printf("%4d %4d", SS_L, SS_R);
+    if (!MENU_ACTIVE) {
+      LCD.setCursor(7, 0);
+      LCD.printf("%4d %4d", SS_FL, SS_FR);
+      LCD.setCursor(7, 1);
+      LCD.printf("%4d %4d", SS_L, SS_R);
+    }
     /*
     Serial.print(SS_L);
     Serial.print("\t");
@@ -228,8 +250,10 @@ void print_serialbt(void *pvParameters) {
 // LCDに現在座標を表示するタスク
 void print_pos(void *pvParameters) {
   while (1) {
-    LCD.setCursor(0, 0);
-    LCD.printf("%2d %2d", MAZE.x, MAZE.y);
+    if (!MENU_ACTIVE) {
+      LCD.setCursor(0, 0);
+      LCD.printf("%2d %2d", MAZE.x, MAZE.y);
+    }
     delay(500);
   }
 }
@@ -238,13 +262,15 @@ void print_pos(void *pvParameters) {
 // LCDにフラグを表示するタスク
 void print_state_flags(void *pvParameters) {
   while (1) {
-    LCD.setCursor(0, 1);
-    LCD.printf("%c%c%c%c%c", 
-      (STATE_FLAG & SF_RUNNING_O) ? 'O' : '-', 
-      (STATE_FLAG & SF_RUNNING_R) ? 'R' : '-',
-      (STATE_FLAG & SF_RUNNING_S) ? 'S' : '-', 
-      (STATE_FLAG & SF_SEARCH_COMPLETE) ? 'C' : '-', 
-      (STATE_FLAG & SF_ADJUST_TO_CENTER) ? 'A' : '-');
+    if (!MENU_ACTIVE) {
+      LCD.setCursor(0, 1);
+      LCD.printf("%c%c%c%c%c",
+        (STATE_FLAG & SF_RUNNING_O) ? 'O' : '-',
+        (STATE_FLAG & SF_RUNNING_R) ? 'R' : '-',
+        (STATE_FLAG & SF_RUNNING_S) ? 'S' : '-',
+        (STATE_FLAG & SF_SEARCH_COMPLETE) ? 'C' : '-',
+        (STATE_FLAG & SF_ADJUST_TO_CENTER) ? 'A' : '-');
+    }
     delay(500);
   }
 }
