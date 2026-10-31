@@ -28,11 +28,7 @@ void go_uturn() {
   delay(100);
   spin_turn(180.0);
   delay(100);
-  MAX_SPEED = 200; // Uターン時は速度を落とす
-  MAX_ACCEL = 200; // Uターン時は加速度も落とす
   adjust_to_center();
-  MAX_SPEED = 400; // Uターン後は速度を元に戻す
-  MAX_ACCEL = 400; // Uターン後は加速度も元に戻す
   run_to_mm(180.0);
 }
 
@@ -80,9 +76,11 @@ void run_to_mm(double distance) {
 void run_to_mm_keep_wall_dist(double distance) {
   const int base_speed = MAX_SPEED;
   const int min_speed = base_speed / 2;
-  const int wall_dist_correction_divisor = 4; // 補正係数
-  const int direction = distance < 0 ? -1 : 1;
-
+  const float correction_factor = 0.03; // 補正係数
+  const int sensor_margin = 300;
+  int left_speed = base_speed;
+  int right_speed = base_speed;
+  
   // 左右のモーターに加速度と移動目標を設定する
   STP_L.setAcceleration(MAX_ACCEL);
   STP_R.setAcceleration(MAX_ACCEL);
@@ -91,14 +89,22 @@ void run_to_mm_keep_wall_dist(double distance) {
 
   // 目標位置に着くまで、壁センサーの値に応じて左右の速度を補正する
   while (STP_L.distanceToGo() != 0 || STP_R.distanceToGo() != 0) {
-    int left_speed = base_speed;
-    int right_speed = base_speed;
-
     // 左壁を検知している場合、中央時のセンサー値との差を速度補正量にする
     if (SS_L > WALL_TV) {
-      const int correction = (SS_L - SS_L_CENTER) / wall_dist_correction_divisor;
-      left_speed += direction * correction;
-      right_speed -= direction * correction;
+      const int correction = abs(SS_L - SS_L_CENTER) * correction_factor;
+      // SS_Lが中央値より大きければ右に、中央値より小さければ左に補正する
+      if (SS_L > (SS_L_CENTER + sensor_margin)) {
+        left_speed = base_speed;
+        right_speed -= correction;
+      }
+      else if (SS_L < (SS_L_CENTER - sensor_margin)) {
+        left_speed -= correction;
+        right_speed = base_speed;
+      }
+      else {
+        left_speed = base_speed;
+        right_speed = base_speed;
+      }
       // 補正後の速度が基準速度を超えたり、下がりすぎたりしないよう制限する
       left_speed = constrain(left_speed, min_speed, base_speed);
       right_speed = constrain(right_speed, min_speed, base_speed);

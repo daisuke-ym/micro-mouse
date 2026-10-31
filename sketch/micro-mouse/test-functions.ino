@@ -55,6 +55,10 @@ void test_decide_direction_pivotturn() {
 // ----------------------------------------------------------------------
 void test_run_shortest_path() {
   if (digitalRead(SW2) == LOW) {
+    MAZE.x = 0;
+    MAZE.y = 0;
+    MAZE.direction = DIR_NORTH;
+    SERIAL_OUT.printf("Starting shortest path from (%d, %d)\n", MAZE.x, MAZE.y);
     delay(1000);
     run_shortest_path(0, 0, MAZE_GOAL_X, MAZE_GOAL_Y, DIR_NORTH);
     flash_alternate(20); // 最短経路実行時にLEDを点滅

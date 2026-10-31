@@ -7,7 +7,10 @@ const char BT_NAME[] = "EAM_daisuke-han";
 
 // ----------------------------------------------------------------------
 // 車体の数値
-const double STEPS = 524.0; // 1回転するのに必要なステップ数
+const double STEPS = 527.0; // 1回転するのに必要なステップ数
+// STEPSは加速度によって値が変わる
+// MAX_ACCELが200のときのSTEPSは524、400のときのSTEPSは527
+// モーターの設計上の1回転に必要なステップ数は512だが、回転速度の設定により脱調するのかも
 const double WHEEL_D = 54.8; // ホイールの直径(mm)
 const double TREAD = 98.0; // トレッド(mm)
 const double MMPS = M_PI * WHEEL_D / STEPS; // 1ステップで進む距離(milli meter per step)
@@ -52,4 +55,4 @@ const int WALL_DIST[] = {
 // 通路中央に置いたときの壁までの距離
 const int WALL_DIST_CENTER = 35;
 // 通路中央に置いたときの SS_L の値
-const int SS_L_CENTER = 1395;
+const int SS_L_CENTER = 1320;
