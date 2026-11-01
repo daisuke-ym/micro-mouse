@@ -63,19 +63,15 @@ void loop() {
   
   switch (menu_control()) {
     case MENU_LEFT_HAND:
-      delay(1000);
       test_decide_direction();
       break;
     case MENU_TREMAUX:
-      delay(1000);
       test_decide_direction_tremaux();
       break;
     case MENU_ADACHI:
-      delay(1000);
       test_decide_direction_adachi();
       break;
     case MENU_SHORTEST_PATH:
-      delay(1000);
       test_run_shortest_path();
       break;
     case MENU_SENSOR_DISPLAY:

@@ -39,7 +39,12 @@ MenuItem menu_control() {
         while (digitalRead(SW1) == LOW) {
           delay(10);
         }
-        delay(300);
+        if (MENU_LABELS[selected] == MENU_LABELS[MENU_SENSOR_DISPLAY]) {
+          delay(500);
+        }
+        else {
+          delay(1500);
+        }
         LCD.clear();
         MENU_ACTIVE = false;
         return static_cast<MenuItem>(selected);
