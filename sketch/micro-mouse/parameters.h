@@ -12,7 +12,7 @@ const double STEPS = 527.0; // 1回転するのに必要なステップ数
 // MAX_ACCELが200のときのSTEPSは524、400のときのSTEPSは527
 // モーターの設計上の1回転に必要なステップ数は512だが、回転速度の設定により脱調するのかも
 const double WHEEL_D = 54.8; // ホイールの直径(mm)
-const double TREAD = 98.0; // トレッド(mm)
+const double TREAD = 102.0; //98.0; // トレッド(mm)
 const double MMPS = M_PI * WHEEL_D / STEPS; // 1ステップで進む距離(milli meter per step)
 int MAX_SPEED = 400;
 int MAX_ACCEL = 400;
