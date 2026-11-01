@@ -1,25 +1,75 @@
 // ----------------------------------------------------------------------
 void go_forward() {
-  //run_to_mm(180.0);
-  run_to_mm_keep_wall_dist(180.0);
+  run_to_mm(180.0);
+  //run_to_mm_keep_wall_dist(180.0);
+  //run_to_mm_before_adjustment(180.0);
 }
 
 // ----------------------------------------------------------------------
 void go_left() {
-  run_to_mm(40.0);
-  delay(100);
-  spin_turn(-90.0);
-  delay(100);
-  run_to_mm(-40.0 + 180.0);
+  const double turn_angle = -85.0;
+
+  if (SS_FL > WALL_TV) {
+    // 前方に壁がある場合は前のセンサーが検知するまで進む
+    run_to_mm(180.0);
+    delay(100);
+    if (SS_R > WALL_TV) {
+      // 右側に壁がある場合は調整動作が入る
+      spin_turn(turn_angle);
+      delay(100);
+      run_to_mm(-100.0);
+      delay(100);
+      run_to_mm(180.0);
+    }
+    else {
+      // 右側に壁がない場合はそのまま左に旋回する
+      spin_turn(turn_angle);
+      delay(100);
+      run_to_mm(-40 + 180.0);
+    }
+  }
+  else {
+    // 前方に壁がない場合は少し進んでから左に旋回する
+    run_to_mm(40.0);
+    delay(100);
+    spin_turn(turn_angle);
+    delay(100);
+    run_to_mm(-40 + 180.0);
+  }
 }
 
 // ----------------------------------------------------------------------
 void go_right() {
-  run_to_mm(40.0);
-  delay(100);
-  spin_turn(90.0);
-  delay(100);
-  run_to_mm(-40.0 + 180.0);
+  const double turn_angle = 85.0;
+
+  if (SS_FL > WALL_TV) {
+    // 前方に壁がある場合は前のセンサーが検知するまで進む
+    run_to_mm(180.0);
+    delay(100);
+    if (SS_L > WALL_TV) {
+      // 左側に壁がある場合は調整動作が入る
+      spin_turn(turn_angle);
+      delay(100);
+      run_to_mm(-100.0);
+      delay(100);
+      adjust_to_center();
+      run_to_mm(180.0);
+    }
+    else {
+      // 左側に壁がない場合はそのまま右に旋回する
+      spin_turn(turn_angle);
+      delay(100);
+      run_to_mm(-40 + 180.0);
+    }
+  }
+  else {
+    // 前方に壁がない場合は少し進んでから右に旋回する
+    run_to_mm(40.0);
+    delay(100);
+    spin_turn(turn_angle);
+    delay(100);
+    run_to_mm(-40 + 180.0);
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -50,6 +100,8 @@ void go_right_pivot() {
 // mm単位で指定した距離だけ走る
 // マイナス値は後退
 void run_to_mm(double distance) {
+  static bool left_right = true; // 先に.run()するモーターを交互に切り替えるため
+
   STP_L.setMaxSpeed(MAX_SPEED);
   STP_R.setMaxSpeed(MAX_SPEED);
   STP_L.setAcceleration(MAX_ACCEL);
@@ -57,8 +109,16 @@ void run_to_mm(double distance) {
   STP_L.move(distance / MMPS);
   STP_R.move(distance / MMPS);
   while (STP_L.distanceToGo() != 0 && STP_R.distanceToGo() !=0) {
-    STP_L.run();
-    STP_R.run();
+    if (left_right) {
+      STP_L.run();
+      STP_R.run();
+      left_right = false;
+    }
+    else {
+      STP_R.run();
+      STP_L.run();
+      left_right = true;
+    }
     if (SS_FL > FL_LIMIT || SS_FR > FR_LIMIT) {
       STP_L.setCurrentPosition(0); // 2回目以降呼び出したとき急加速しないようにする処理
       STP_R.setCurrentPosition(0);
@@ -136,6 +196,8 @@ void run_to_mm_keep_wall_dist(double distance) {
 // angle: 角度(度単位)
 // 右回りは正、左回りは負
 void spin_turn(double angle) {
+  static bool left_right = true; // 先に.run()するモーターを交互に切り替えるため
+  
   // 右回りを正とする
   double dist = TREAD * M_PI * angle / 360.0 / MMPS;
   STP_L.setMaxSpeed(MAX_SPEED);
@@ -145,8 +207,15 @@ void spin_turn(double angle) {
   STP_L.move(dist);
   STP_R.move(-dist);
   while (STP_L.distanceToGo() != 0 && STP_R.distanceToGo() !=0) {
-    STP_L.run();
-    STP_R.run();
+    if (left_right) {
+      STP_L.run();
+      STP_R.run();
+      left_right = false;
+    } else {
+      STP_R.run();
+      STP_L.run();
+      left_right = true;
+    }
   }
   STP_L.move(0); // 2回目以降呼び出したときに蛇行しないようにする処理
   STP_R.move(0);
